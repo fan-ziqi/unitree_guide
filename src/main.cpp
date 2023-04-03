@@ -12,7 +12,9 @@
 #include "control/BalanceCtrl.h"
 
 #ifdef COMPILE_WITH_REAL_ROBOT
+
 #include "interface/IOSDK.h"
+
 #endif  // COMPILE_WITH_REAL_ROBOT
 
 #ifdef COMPILE_WITH_ROS
@@ -62,8 +64,18 @@ int main(int argc, char **argv)
 #endif  // COMPILE_WITH_SIMULATION
 
 #ifdef COMPILE_WITH_REAL_ROBOT
+#ifdef ROBOT_TYPE_A1
 	ioInter = new IOSDK();
 	ctrlPlat = CtrlPlatform::REALROBOT;
+#endif
+#ifdef ROBOT_TYPE_Go1
+	ioInter = new IOSDK();
+	ctrlPlat = CtrlPlatform::REALROBOT;
+#endif
+#ifdef ROBOT_TYPE_Mi
+	ioInter = new IOMI();
+	ctrlPlat = CtrlPlatform::REALROBOT;
+#endif
 #endif  // COMPILE_WITH_REAL_ROBOT
 
 	CtrlComponents *ctrlComp = new CtrlComponents(ioInter);

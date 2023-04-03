@@ -9,16 +9,17 @@
 #include "interface/CmdPanel.h"
 #include <string>
 
-class IOInterface{
+class IOInterface
+{
 public:
-IOInterface(){}
-~IOInterface(){delete cmdPanel;}
-virtual void sendRecv(const LowlevelCmd *cmd, LowlevelState *state) = 0;
-void zeroCmdPanel(){cmdPanel->setZero();}
-void setPassive(){cmdPanel->setPassive();}
+	IOInterface() {}
+	~IOInterface() { delete cmdPanel; }
+	virtual void sendRecv(const LowlevelCmd *cmd, LowlevelState *state) = 0;
+	void zeroCmdPanel() { cmdPanel->setZero(); }
+	void setPassive() { cmdPanel->setPassive(); }
 
 protected:
-CmdPanel *cmdPanel;
+	CmdPanel *cmdPanel;
 };
 
 #endif  //IOINTERFACE_H

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
 project(unitree_guide)
 
-set(ROBOT_TYPE Go1)         # The type of robot, support Go1 and A1 currently && Mi
+set(ROBOT_TYPE A1)         # The type of robot, support Go1 and A1 currently && Mi
 set(PLATFORM amd64)         # The platform to compile, support amd64 and arm64
 
 set(CATKIN_MAKE ON)        # Use CATKIN_MAKE or not, ON or OFF
@@ -58,7 +58,9 @@ if (CATKIN_MAKE)
                 controller_manager
                 joint_state_controller
                 gazebo_ros
-                # gazebo
+                gazebo_msgs
+                gazebo_plugins
+                gazebo_ros_control
                 )
     endif ()
 
@@ -103,6 +105,12 @@ if (REAL_ROBOT)
         link_directories(
                 library/unitree_legged_sdk-3.8.0/lib/cpp/amd64
         )
+    elseif (${ROBOT_TYPE} STREQUAL "Mi")
+        message("ROBOT_TYPE_Mi")
+        add_subdirectory(library/cyberdog_motor_sdk)
+        include_directories(
+                library/cyberdog_motor_sdk/include
+        )
     endif ()
 endif ()
 
@@ -138,6 +146,12 @@ if (REAL_ROBOT)
         elseif (${PLATFORM} STREQUAL "arm64")
             target_link_libraries(junior_ctrl libunitree_legged_sdk.a)
         endif ()
+    elseif (${ROBOT_TYPE} STREQUAL "Mi")
+        if (${PLATFORM} STREQUAL "amd64")
+            target_link_libraries(junior_ctrl cyberdog_motor_sdk)
+        elseif (${PLATFORM} STREQUAL "arm64")
+            target_link_libraries(junior_ctrl cyberdog_motor_sdk)
+        endif ()
     endif ()
 endif ()
 target_link_libraries(junior_ctrl -pthread lcm)
@@ -145,3 +159,19 @@ target_link_libraries(junior_ctrl -pthread lcm)
 if (NOT CATKIN_MAKE)
     set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 endif ()
+
+#画图
+#add_executable(myTest src/test.cpp ${SRC_LIST})
+#target_link_libraries(myTest ${catkin_LIBRARIES})
+#add_dependencies(myTest ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+#target_include_directories(myTest PRIVATE ${Python2_INCLUDE_DIRS} ${Python2_NumPy_INCLUDE_DIRS})
+#target_link_libraries(myTest Python2::Python Python2::NumPy)
+#target_link_libraries(myTest -pthread lcm)
+
+add_executable(myTest src/test.cpp ${SRC_LIST})
+target_link_libraries(myTest ${catkin_LIBRARIES})
+add_dependencies(myTest ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+find_package(PythonLibs REQUIRED)
+target_include_directories(myTest PRIVATE ${PYTHON_INCLUDE_DIRS})
+target_link_libraries(myTest ${PYTHON_LIBRARIES})
+target_link_libraries(myTest -pthread lcm)

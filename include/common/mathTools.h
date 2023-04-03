@@ -204,6 +204,9 @@ inline Vec3 rotMatToRPY(const Mat3 &R)
 	return rpy;
 }
 
+/*
+ * 四元数转旋转矩阵
+ */
 inline RotMat quatToRotMat(const Quat &q)
 {
 	double e0 = q(0);
@@ -212,11 +215,9 @@ inline RotMat quatToRotMat(const Quat &q)
 	double e3 = q(3);
 
 	RotMat R;
-	R << 1 - 2 * (e2 * e2 + e3 * e3), 2 * (e1 * e2 - e0 * e3),
-			2 * (e1 * e3 + e0 * e2), 2 * (e1 * e2 + e0 * e3),
-			1 - 2 * (e1 * e1 + e3 * e3), 2 * (e2 * e3 - e0 * e1),
-			2 * (e1 * e3 - e0 * e2), 2 * (e2 * e3 + e0 * e1),
-			1 - 2 * (e1 * e1 + e2 * e2);
+	R << 1 - 2 * (e2 * e2 + e3 * e3), 2 * (e1 * e2 - e0 * e3), 2 * (e1 * e3 + e0 * e2),
+			2 * (e1 * e2 + e0 * e3), 1 - 2 * (e1 * e1 + e3 * e3), 2 * (e2 * e3 - e0 * e1),
+			2 * (e1 * e3 - e0 * e2), 2 * (e2 * e3 + e0 * e1), 1 - 2 * (e1 * e1 + e2 * e2);
 	return R;
 }
 
