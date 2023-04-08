@@ -80,9 +80,11 @@ void Estimator::_initSystem()
 	_C(26, 14) = 1;
 	_C(27, 17) = 1;
 
+	// 初始最优估计协方差设为一个很大的值
 	_P.setIdentity();
 	_P = _largeVariance * _P;
 
+	// 将计算结果赋值给_RInit和_Cu
 	_RInit
 			<< 0.008, 0.012, -0.000, -0.009, 0.012, 0.000, 0.009, -0.009, -0.000, -0.009, -0.009, 0.000, -0.000, 0.000, -0.000, 0.000, -0.000, -0.001, -0.002, 0.000, -0.000, -0.003, -0.000, -0.001, 0.000, 0.000, 0.000, 0.000,
 			0.012, 0.019, -0.001, -0.014, 0.018, -0.000, 0.014, -0.013, -0.000, -0.014, -0.014, 0.001, -0.001, 0.001, -0.001, 0.000, 0.000, -0.001, -0.003, 0.000, -0.001, -0.004, -0.000, -0.001, 0.000, 0.000, 0.000, 0.000,
@@ -121,6 +123,7 @@ void Estimator::_initSystem()
 	_QInit = _Qdig.asDiagonal();
 	_QInit += _B * _Cu * _B.transpose();
 
+	// 对R矩阵和Cu矩阵的测量
 	_RCheck = new AvgCov(28, _estName + " R");
 	_uCheck = new AvgCov(3, _estName + " u");
 
@@ -137,6 +140,10 @@ void Estimator::_initSystem()
 
 void Estimator::run()
 {
+//	// 测量R和Cu，需要在控制程序开始的10s之内切换到FixedStand模式
+//	_RCheck->measure(_y);
+//	_uCheck->measure(_u);
+
 	_feetH.setZero();
 	_feetPosGlobalKine = _robModel->getFeet2BPositions(*_lowState, FrameType::GLOBAL);
 	_feetVelGlobalKine = _robModel->getFeet2BVelocities(*_lowState, FrameType::GLOBAL);

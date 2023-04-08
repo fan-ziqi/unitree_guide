@@ -1,18 +1,14 @@
-/**********************************************************************
- Copyright (c) 2020-2023, Unitree Robotics.Co.Ltd. All rights reserved.
-***********************************************************************/
 #ifdef COMPILE_WITH_REAL_ROBOT
 #if defined(ROBOT_TYPE_Mi)
 
 #include "interface/IOMI.h"
 #include "interface/KeyBoard.h"
-#include <stdio.h>
 
 #ifdef ROBOT_TYPE_Mi
 IOMI::IOMI()
+		: CustomInterface(500)
 {
-	std::cout << "The control interface for real robot" << std::endl;
-	_cyberdogInterface = new CyberdogInterface(500);//500HZ
+	std::cout << "The control interface for real robot (Cyberdog)" << std::endl;
 
 	cmdPanel = new KeyBoard();
 
@@ -30,38 +26,39 @@ void IOMI::sendRecv(const LowlevelCmd *cmd, LowlevelState *state)
 {
 	for(int i(0); i < 12; ++i)
 	{
-		_lowCmd.motorCmd[i].mode = cmd->motorCmd[i].mode;
-		_lowCmd.motorCmd[i].q = cmd->motorCmd[i].q;
-		_lowCmd.motorCmd[i].dq = cmd->motorCmd[i].dq;
-		_lowCmd.motorCmd[i].Kp = cmd->motorCmd[i].Kp;
-		_lowCmd.motorCmd[i].Kd = cmd->motorCmd[i].Kd;
-		_lowCmd.motorCmd[i].tau = cmd->motorCmd[i].tau;
+//		_lowCmd.motorCmd[i].mode = cmd->motorCmd[i].mode;
+		cyberdogCmd.q_des[i] = cmd->motorCmd[i].q;
+		cyberdogCmd.qd_des[i] = cmd->motorCmd[i].dq;
+		cyberdogCmd.kp_des[i] = cmd->motorCmd[i].Kp;
+		cyberdogCmd.kd_des[i] = cmd->motorCmd[i].Kd;
+		cyberdogCmd.tau_des[i] = cmd->motorCmd[i].tau;
 	}
-
-	_udp.SetSend(_lowCmd);
-	_udp.Send();
-
-	_udp.Recv();
-	_udp.GetRecv(_lowState);
 
 	for(int i(0); i < 12; ++i)
 	{
-		state->motorState[i].q = _lowState.motorState[i].q;
-		state->motorState[i].dq = _lowState.motorState[i].dq;
-		state->motorState[i].ddq = _lowState.motorState[i].ddq;
-		state->motorState[i].tauEst = _lowState.motorState[i].tauEst;
-		state->motorState[i].mode = _lowState.motorState[i].mode;
+		state->motorState[i].q = cyberdogData.q[i];
+		state->motorState[i].dq = cyberdogData.qd[i];
+//		state->motorState[i].ddq = _lowState.motorState[i].ddq;
+		state->motorState[i].tauEst = cyberdogData.tau[i];
+//		state->motorState[i].mode = _lowState.motorState[i].mode;
 	}
 
-	for(int i(0); i < 3; ++i)
+	//IMU
+	for(int i = 0; i < 3; i++)
 	{
-		state->imu.quaternion[i] = _lowState.imu.quaternion[i];
-		state->imu.gyroscope[i] = _lowState.imu.gyroscope[i];
-		state->imu.accelerometer[i] = _lowState.imu.accelerometer[i];
+		state->imu.accelerometer[i] = cyberdogData.acc[i];
 	}
-	state->imu.quaternion[3] = _lowState.imu.quaternion[3];
+	// 注意 Cyberdog SDK 的四元数顺序为 xyzw 需要转成 wxyz
+	state->imu.quaternion[0] = cyberdogData.quat[1];
+	state->imu.quaternion[1] = cyberdogData.quat[2];
+	state->imu.quaternion[2] = cyberdogData.quat[3];
+	state->imu.quaternion[3] = cyberdogData.quat[0];
+	for(int i = 0; i < 3; i++)
+	{
+		state->imu.gyroscope[i] = cyberdogData.omega[i];
+	}
 
-	cmdPanel->receiveHandle(&_lowState);
+//	cmdPanel->receiveHandle(&_lowState);
 	state->userCmd = cmdPanel->getUserCmd();
 	state->userValue = cmdPanel->getUserValue();
 

@@ -1,12 +1,12 @@
 cmake_minimum_required(VERSION 3.14)
 project(unitree_guide)
 
-set(ROBOT_TYPE A1)         # The type of robot, support Go1 and A1 currently && Mi
+set(ROBOT_TYPE Mi)         # The type of robot, support Go1 and A1 currently && Mi
 set(PLATFORM amd64)         # The platform to compile, support amd64 and arm64
 
-set(CATKIN_MAKE ON)        # Use CATKIN_MAKE or not, ON or OFF
-set(SIMULATION ON)         # Use Gazebo or not, ON or OFF
-set(REAL_ROBOT OFF)          # Link real robot or not, ON or OFF
+set(CATKIN_MAKE OFF)        # Use CATKIN_MAKE or not, ON or OFF
+set(SIMULATION OFF)         # Use Gazebo or not, ON or OFF
+set(REAL_ROBOT ON)          # Link real robot or not, ON or OFF
 set(DEBUG OFF)              # Use debug functions or not, ON or OFF
 set(MOVE_BASE OFF)               # Need move_base or not, ON or OFF 
 
@@ -160,18 +160,23 @@ if (NOT CATKIN_MAKE)
     set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 endif ()
 
-#画图
-#add_executable(myTest src/test.cpp ${SRC_LIST})
-#target_link_libraries(myTest ${catkin_LIBRARIES})
-#add_dependencies(myTest ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-#target_include_directories(myTest PRIVATE ${Python2_INCLUDE_DIRS} ${Python2_NumPy_INCLUDE_DIRS})
-#target_link_libraries(myTest Python2::Python Python2::NumPy)
-#target_link_libraries(myTest -pthread lcm)
-
+# PlotTest
 add_executable(myTest src/test.cpp ${SRC_LIST})
-target_link_libraries(myTest ${catkin_LIBRARIES})
-add_dependencies(myTest ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-find_package(PythonLibs REQUIRED)
-target_include_directories(myTest PRIVATE ${PYTHON_INCLUDE_DIRS})
-target_link_libraries(myTest ${PYTHON_LIBRARIES})
+if (CATKIN)
+    target_link_libraries(myTest ${catkin_LIBRARIES})
+    add_dependencies(myTest ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+endif ()
+find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
+target_link_libraries(myTest
+        Python3::Python
+        Python3::Module
+        )
+find_package(Python3 COMPONENTS NumPy)
+if (Python3_NumPy_FOUND)
+    target_link_libraries(myTest
+            Python3::NumPy
+            )
+else ()
+    target_compile_definitions(myTest WITHOUT_NUMPY)
+endif ()
 target_link_libraries(myTest -pthread lcm)

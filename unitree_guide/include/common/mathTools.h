@@ -297,7 +297,7 @@ inline Vec3 noHomoVec(Vec4 v4)
 	return v3;
 }
 
-// Calculate average value and covariance
+// 计算平均值(average)和协方差(covariance)
 class AvgCov
 {
 public:

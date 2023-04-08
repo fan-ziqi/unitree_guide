@@ -1,10 +1,9 @@
-/**********************************************************************
- Copyright (c) 2020-2023, Unitree Robotics.Co.Ltd. All rights reserved.
-***********************************************************************/
 #ifndef IOMI_H
 #define IOMI_H
 
 #include "interface/IOInterface.h"
+
+// cyberdog接口
 #include <CustomInterface.h>
 
 #ifdef COMPILE_WITH_MOVE_BASE
@@ -16,7 +15,7 @@
 using CyberdogData = Robot_Data;
 using CyberdogCmd = Motor_Cmd;
 
-class IOMI : public IOInterface
+class IOMI : public CustomInterface, public IOInterface
 {
 public:
 	IOMI();

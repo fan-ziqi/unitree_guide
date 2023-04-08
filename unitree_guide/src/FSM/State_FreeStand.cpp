@@ -53,7 +53,7 @@ void State_FreeStand::run()
 	                invNormalize(_userValue.ly, _pitchMin, _pitchMax),
 	                -invNormalize(_userValue.rx, _yawMin, _yawMax),
 	                invNormalize(_userValue.ry, _heightMin, _heightMax));
-	// 根据足端目标位置求得各个关节的目标角度
+	// 根据各个足端目标位置求得各个关节的目标角度
 	_calcCmd(vecOP);
 }
 
