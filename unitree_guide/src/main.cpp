@@ -12,9 +12,9 @@
 #include "control/BalanceCtrl.h"
 
 #ifdef COMPILE_WITH_REAL_ROBOT
-#if defined(ROBOT_TYPE_A1) && defined(ROBOT_TYPE_Go1)
+#if defined(ROBOT_TYPE_A1) || defined(ROBOT_TYPE_Go1)
 #include "interface/IOSDK.h"
-#elif defined(ROBOT_TYPE_Mi)
+#elif defined(ROBOT_TYPE_CYBERDOG)
 #include "interface/IOCYBERDOG.h"
 #endif
 #endif  // COMPILE_WITH_REAL_ROBOT
@@ -74,7 +74,7 @@ int main(int argc, char **argv)
 	ioInter = new IOSDK();
 	ctrlPlat = CtrlPlatform::REALROBOT;
 #endif
-#ifdef ROBOT_TYPE_Mi
+#ifdef ROBOT_TYPE_CYBERDOG
 	ioInter = new IOCYBERDOG();
 	ctrlPlat = CtrlPlatform::REALROBOT;
 #endif
