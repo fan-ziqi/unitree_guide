@@ -15,7 +15,7 @@
 #if defined(ROBOT_TYPE_A1) && defined(ROBOT_TYPE_Go1)
 #include "interface/IOSDK.h"
 #elif defined(ROBOT_TYPE_Mi)
-#include "interface/IOMI.h"
+#include "interface/IOCYBERDOG.h"
 #endif
 #endif  // COMPILE_WITH_REAL_ROBOT
 
@@ -75,7 +75,7 @@ int main(int argc, char **argv)
 	ctrlPlat = CtrlPlatform::REALROBOT;
 #endif
 #ifdef ROBOT_TYPE_Mi
-	ioInter = new IOMI();
+	ioInter = new IOCYBERDOG();
 	ctrlPlat = CtrlPlatform::REALROBOT;
 #endif
 #endif  // COMPILE_WITH_REAL_ROBOT
@@ -91,8 +91,8 @@ int main(int argc, char **argv)
 #ifdef ROBOT_TYPE_Go1
 	ctrlComp->robotModel = new Go1Robot();
 #endif
-#ifdef ROBOT_TYPE_Mi
-	ctrlComp->robotModel = new MiRobot();
+#ifdef ROBOT_TYPE_CYBERDOG
+	ctrlComp->robotModel = new CYBERDOGRobot();
 #endif
 
 	ctrlComp->waveGen = new WaveGenerator(0.45, 0.5, Vec4(0, 0.5, 0.5, 0));  //Trot

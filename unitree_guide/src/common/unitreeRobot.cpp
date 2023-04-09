@@ -194,7 +194,7 @@ Go1Robot::Go1Robot()
 #endif  // COMPILE_WITH_SIMULATION
 }
 
-MiRobot::MiRobot()
+CYBERDOGRobot::CYBERDOGRobot()
 {
 	_Legs[0] = new MiLeg(0, Vec3(0.1881, -0.04675, 0));
 	_Legs[1] = new MiLeg(1, Vec3(0.1881, 0.04675, 0));

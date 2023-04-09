@@ -1,9 +1,9 @@
 #ifdef COMPILE_WITH_REAL_ROBOT
 
-#if defined(ROBOT_TYPE_Mi)
+#if defined(ROBOT_TYPE_CYBERDOG)
 
-#ifndef IOMI_H
-#define IOMI_H
+#ifndef IOCYBERDOG_H
+#define IOCYBERDOG_H
 
 #include "interface/IOInterface.h"
 
@@ -19,11 +19,11 @@
 using CyberdogData = Robot_Data;
 using CyberdogCmd = Motor_Cmd;
 
-class IOMI : public CustomInterface, public IOInterface
+class IOCYBERDOG : public CustomInterface, public IOInterface
 {
 public:
-	IOMI();
-	~IOMI() {}
+	IOCYBERDOG();
+	~IOCYBERDOG() {}
 	void sendRecv(const LowlevelCmd *cmd, LowlevelState *state);
 
 private:
@@ -38,7 +38,7 @@ private:
 #endif  // COMPILE_WITH_MOVE_BASE
 };
 
-#endif  // IOMI_H
+#endif  // IOCYBERDOG_H
 
 #endif
 

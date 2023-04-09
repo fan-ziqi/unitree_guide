@@ -1,12 +1,11 @@
 #ifdef COMPILE_WITH_REAL_ROBOT
 
-#if defined(ROBOT_TYPE_Mi)
+#if defined(ROBOT_TYPE_CYBERDOG)
 
-#include "interface/IOMI.h"
+#include "interface/IOCYBERDOG.h"
 #include "interface/KeyBoard.h"
 
-#ifdef ROBOT_TYPE_Mi
-IOMI::IOMI()
+IOCYBERDOG::IOCYBERDOG()
 		: CustomInterface(500)
 {
 	std::cout << "The control interface for real robot (Cyberdog)" << std::endl;
@@ -21,9 +20,8 @@ IOMI::IOMI()
 	_joint_state.effort.resize(12);
 #endif  // COMPILE_WITH_MOVE_BASE
 }
-#endif
 
-void IOMI::sendRecv(const LowlevelCmd *cmd, LowlevelState *state)
+void IOCYBERDOG::sendRecv(const LowlevelCmd *cmd, LowlevelState *state)
 {
 	for(int i(0); i < 12; ++i)
 	{

@@ -109,11 +109,11 @@ public:
 	~Go1Robot() {};
 };
 
-class MiRobot : public QuadrupedRobot
+class CYBERDOGRobot : public QuadrupedRobot
 {
 public:
-	MiRobot();
-	~MiRobot() {};
+	CYBERDOGRobot();
+	~CYBERDOGRobot() {};
 };
 
 #endif  // UNITREEROBOT_H

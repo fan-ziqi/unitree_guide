@@ -80,8 +80,8 @@ the robotics community are all welcome. Feel free to raise an issue ~ <br>
     add_definitions(-DROBOT_TYPE_A1)
   elseif(${ROBOT_TYPE} STREQUAL "Go1")
     add_definitions(-DROBOT_TYPE_Go1)
-  elseif(${ROBOT_TYPE} STREQUAL "Mi")
-    add_definitions(-DROBOT_TYPE_Mi)
+  elseif(${ROBOT_TYPE} STREQUAL "CYBERDOG")
+    add_definitions(-DROBOT_TYPE_CYBERDOG)
   else()
   
   if(REAL_ROBOT)
@@ -106,7 +106,7 @@ the robotics community are all welcome. Feel free to raise an issue ~ <br>
                     library/unitree_legged_sdk-3.8.0/lib/cpp/arm64
             )
         endif()
-    elseif(${ROBOT_TYPE} STREQUAL "Mi")
+    elseif(${ROBOT_TYPE} STREQUAL "CYBERDOG")
         add_subdirectory(library/cyberdog_motor_sdk)
         include_directories(
                 library/cyberdog_motor_sdk/include
@@ -123,12 +123,51 @@ the robotics community are all welcome. Feel free to raise an issue ~ <br>
         endif()
     elseif(${ROBOT_TYPE} STREQUAL "Go1")
         target_link_libraries(junior_ctrl libunitree_legged_sdk.a)
-    elseif(${ROBOT_TYPE} STREQUAL "Mi")
+    elseif(${ROBOT_TYPE} STREQUAL "CYBERDOG")
         target_link_libraries(junior_ctrl cyberdog_motor_sdk)
     endif()
   endif()
   ```
-* 新增`IOMI.cpp`、`IOMI.h`接口文件
+* 新增`IOCYBERDOG.cpp`、`IOCYBERDOG.h`接口文件
+* 修改`unitreeRobot.cpp`、`unitreeRobot.h`
+  ```c++
+    class CYBERDOGRobot : public QuadrupedRobot
+    {
+        public:
+        CYBERDOGRobot();
+        ~CYBERDOGRobot() {};
+    };
+  
+    CYBERDOGRobot::CYBERDOGRobot()
+    {
+        _Legs[0] = new MiLeg(0, Vec3(0.1881, -0.04675, 0));
+        _Legs[1] = new MiLeg(1, Vec3(0.1881, 0.04675, 0));
+        _Legs[2] = new MiLeg(2, Vec3(-0.1881, -0.04675, 0));
+        _Legs[3] = new MiLeg(3, Vec3(-0.1881, 0.04675, 0));
+    
+        _feetPosNormalStand << 0.1881, 0.1881, -0.1881, -0.1881,
+                -0.1300, 0.1300, -0.1300, 0.1300,
+                -0.3200, -0.3200, -0.3200, -0.3200;
+    
+        _robVelLimitX << -0.4, 0.4;
+        _robVelLimitY << -0.3, 0.3;
+        _robVelLimitYaw << -0.5, 0.5;
+    
+    
+    #ifdef COMPILE_WITH_REAL_ROBOT
+        _mass = 6.52;
+        _pcb << 0.04, 0.0, 0.0;
+        _Ib = Vec3(0.0792, 0.2085, 0.2265).asDiagonal();
+    #endif  // COMPILE_WITH_REAL_ROBOT
+    
+    #ifdef COMPILE_WITH_SIMULATION
+        _mass = 12.0;
+        _pcb << 0.0, 0.0, 0.0;
+        _Ib = Vec3(0.0792, 0.2085, 0.2265).asDiagonal();
+    #endif  // COMPILE_WITH_SIMULATION
+    }
+  
+  ```
 * `main.cpp`中增加
   ```cmake
     #ifdef COMPILE_WITH_REAL_ROBOT
@@ -140,8 +179,8 @@ the robotics community are all welcome. Feel free to raise an issue ~ <br>
     ioInter = new IOSDK();
     ctrlPlat = CtrlPlatform::REALROBOT;
     #endif
-    #ifdef ROBOT_TYPE_Mi
-    ioInter = new IOMI();
+    #ifdef ROBOT_TYPE_CYBERDOG
+    ioInter = new IOCYBERDOG();
     ctrlPlat = CtrlPlatform::REALROBOT;
     #endif
     #endif  // COMPILE_WITH_REAL_ROBOT
@@ -152,7 +191,7 @@ the robotics community are all welcome. Feel free to raise an issue ~ <br>
     #ifdef ROBOT_TYPE_Go1
     ctrlComp->robotModel = new Go1Robot();
     #endif
-    #ifdef ROBOT_TYPE_Mi
-    ctrlComp->robotModel = new MiRobot();
+    #ifdef ROBOT_TYPE_CYBERDOG
+    ctrlComp->robotModel = new CYBERDOGRobot();
     #endif
   ```

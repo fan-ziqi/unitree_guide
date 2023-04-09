@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
 project(unitree_guide)
 
-set(ROBOT_TYPE Mi)         # The type of robot, support Go1 and A1 currently && Mi
+set(ROBOT_TYPE CYBERDOG)    # The type of robot, support Go1 and A1 currently && CYBERDOG
 set(PLATFORM amd64)         # The platform to compile, support amd64 and arm64
 
 set(CATKIN_MAKE OFF)        # Use CATKIN_MAKE or not, ON or OFF
@@ -21,8 +21,8 @@ if(${ROBOT_TYPE} STREQUAL "A1")
     add_definitions(-DROBOT_TYPE_A1)
 elseif(${ROBOT_TYPE} STREQUAL "Go1")
     add_definitions(-DROBOT_TYPE_Go1)
-elseif(${ROBOT_TYPE} STREQUAL "Mi")
-    add_definitions(-DROBOT_TYPE_Mi)
+elseif(${ROBOT_TYPE} STREQUAL "CYBERDOG")
+    add_definitions(-DROBOT_TYPE_CYBERDOG)
 else()
     message(FATAL_ERROR "[CMake ERROR] The ROBOT_TYPE is error")
 endif()
@@ -110,7 +110,7 @@ if(REAL_ROBOT)
                     library/unitree_legged_sdk-3.8.0/lib/cpp/arm64
             )
         endif()
-    elseif(${ROBOT_TYPE} STREQUAL "Mi")
+    elseif(${ROBOT_TYPE} STREQUAL "CYBERDOG")
         add_subdirectory(library/cyberdog_motor_sdk)
         include_directories(
                 library/cyberdog_motor_sdk/include
@@ -146,7 +146,7 @@ if(REAL_ROBOT)
         endif()
     elseif(${ROBOT_TYPE} STREQUAL "Go1")
         target_link_libraries(junior_ctrl libunitree_legged_sdk.a)
-    elseif(${ROBOT_TYPE} STREQUAL "Mi")
+    elseif(${ROBOT_TYPE} STREQUAL "CYBERDOG")
         target_link_libraries(junior_ctrl cyberdog_motor_sdk)
     endif()
 endif()
@@ -184,7 +184,7 @@ if(REAL_ROBOT)
         endif()
     elseif(${ROBOT_TYPE} STREQUAL "Go1")
         target_link_libraries(myTest libunitree_legged_sdk.a)
-    elseif(${ROBOT_TYPE} STREQUAL "Mi")
+    elseif(${ROBOT_TYPE} STREQUAL "CYBERDOG")
         target_link_libraries(myTest cyberdog_motor_sdk)
     endif()
 endif()
