@@ -1,3 +1,7 @@
+#ifdef COMPILE_WITH_REAL_ROBOT
+
+#if defined(ROBOT_TYPE_Mi)
+
 #ifndef IOMI_H
 #define IOMI_H
 
@@ -25,6 +29,7 @@ public:
 private:
 	CyberdogData cyberdogData;
 	CyberdogCmd cyberdogCmd;
+	void UserCode() {}
 
 #ifdef COMPILE_WITH_MOVE_BASE
 	ros::NodeHandle _nh;
@@ -34,3 +39,7 @@ private:
 };
 
 #endif  // IOMI_H
+
+#endif
+
+#endif  // COMPILE_WITH_REAL_ROBOT

@@ -12,9 +12,11 @@
 #include "control/BalanceCtrl.h"
 
 #ifdef COMPILE_WITH_REAL_ROBOT
-
+#if defined(ROBOT_TYPE_A1) && defined(ROBOT_TYPE_Go1)
 #include "interface/IOSDK.h"
-
+#elif defined(ROBOT_TYPE_Mi)
+#include "interface/IOMI.h"
+#endif
 #endif  // COMPILE_WITH_REAL_ROBOT
 
 #ifdef COMPILE_WITH_ROS

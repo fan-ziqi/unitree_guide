@@ -1,4 +1,5 @@
 #ifdef COMPILE_WITH_REAL_ROBOT
+
 #if defined(ROBOT_TYPE_Mi)
 
 #include "interface/IOMI.h"
@@ -79,4 +80,5 @@ void IOMI::sendRecv(const LowlevelCmd *cmd, LowlevelState *state)
 }
 
 #endif
+
 #endif  // COMPILE_WITH_REAL_ROBOT

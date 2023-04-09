@@ -1,6 +1,10 @@
 /**********************************************************************
  Copyright (c) 2020-2023, Unitree Robotics.Co.Ltd. All rights reserved.
 ***********************************************************************/
+#ifdef COMPILE_WITH_REAL_ROBOT
+
+#if defined(ROBOT_TYPE_A1) || defined(ROBOT_TYPE_Go1)
+
 #ifndef IOSDK_H
 #define IOSDK_H
 
@@ -35,3 +39,7 @@ private:
 };
 
 #endif  // IOSDK_H
+
+#endif
+
+#endif  // COMPILE_WITH_REAL_ROBOT
