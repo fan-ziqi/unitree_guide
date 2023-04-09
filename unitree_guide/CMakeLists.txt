@@ -3,12 +3,18 @@ project(unitree_guide)
 
 set(ROBOT_TYPE CYBERDOG)    # The type of robot, support Go1 and A1 currently && CYBERDOG
 set(PLATFORM amd64)         # The platform to compile, support amd64 and arm64
-
 set(CATKIN_MAKE OFF)        # Use CATKIN_MAKE or not, ON or OFF
 set(SIMULATION OFF)         # Use Gazebo or not, ON or OFF
 set(REAL_ROBOT ON)          # Link real robot or not, ON or OFF
 set(DEBUG OFF)              # Use debug functions or not, ON or OFF
 set(MOVE_BASE OFF)          # Need move_base or not, ON or OFF
+
+message("ROBOT_TYPE: " ${ROBOT_TYPE})
+message("PLATFORM: " ${PLATFORM})
+message("CATKIN_MAKE: " ${CATKIN_MAKE})
+message("SIMULATION: " ${SIMULATION})
+message("REAL_ROBOT: " ${REAL_ROBOT})
+message("DEBUG: " ${DEBUG})
 
 if(NOT DEFINED ROBOT_TYPE)
     message(FATAL_ERROR "[CMake ERROR] Have not defined ROBOT_TYPE")
@@ -153,7 +159,7 @@ endif()
 target_link_libraries(junior_ctrl -pthread lcm)
 
 if(NOT CATKIN_MAKE)
-    set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
+    set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/build/bin)
 endif()
 
 # PlotTest
