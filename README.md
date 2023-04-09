@@ -169,15 +169,7 @@ the robotics community are all welcome. Feel free to raise an issue ~ <br>
   
   ```
 * `main.cpp`中增加
-  ```c++
-    #ifdef COMPILE_WITH_REAL_ROBOT
-    #if defined(ROBOT_TYPE_A1) || defined(ROBOT_TYPE_Go1)
-    #include "interface/IOSDK.h"
-    #elif defined(ROBOT_TYPE_CYBERDOG)
-    #include "interface/IOCYBERDOG.h"
-    #endif
-    #endif  // COMPILE_WITH_REAL_ROBOT
-  
+  ```cmake
     #ifdef COMPILE_WITH_REAL_ROBOT
     #ifdef ROBOT_TYPE_A1
     ioInter = new IOSDK();
