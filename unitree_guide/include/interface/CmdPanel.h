@@ -48,8 +48,8 @@ public:
 	void setPassive() { userCmd = UserCommand::L2_B; }
 	void setZero() { userValue.setZero(); }
 #ifdef COMPILE_WITH_REAL_ROBOT
-#if defined(ROBOT_TYPE_A1) && defined(ROBOT_TYPE_Go1)
-	virtual void receiveHandle(UNITREE_LEGGED_SDK::LowState *lowState){};
+#if defined(ROBOT_TYPE_A1) || defined(ROBOT_TYPE_Go1)
+	virtual void receiveHandle(UNITREE_LEGGED_SDK::LowState *lowState) {};
 #endif
 #endif  // COMPILE_WITH_REAL_ROBOT
 protected:
