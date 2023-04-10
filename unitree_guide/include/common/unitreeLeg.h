@@ -78,6 +78,8 @@ protected:
 	            float py, float pz, float b3z, float b4z);
 	float _sideSign;
 	const float _abadLinkLength, _hipLinkLength, _kneeLinkLength;
+
+	// 从机身中心到该腿基座坐标系{0}的原点的向量
 	const Vec3 _pHip2B;
 };
 

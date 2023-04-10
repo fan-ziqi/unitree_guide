@@ -194,14 +194,17 @@ Go1Robot::Go1Robot()
 #endif  // COMPILE_WITH_SIMULATION
 }
 
+/*
+ *
+ * */
 CYBERDOGRobot::CYBERDOGRobot()
 {
-	_Legs[0] = new MiLeg(0, Vec3(0.1881, -0.04675, 0));
-	_Legs[1] = new MiLeg(1, Vec3(0.1881, 0.04675, 0));
-	_Legs[2] = new MiLeg(2, Vec3(-0.1881, -0.04675, 0));
-	_Legs[3] = new MiLeg(3, Vec3(-0.1881, 0.04675, 0));
+	_Legs[0] = new MiLeg(0, Vec3(0.235, -0.05, 0));
+	_Legs[1] = new MiLeg(1, Vec3(0.235, 0.05, 0));
+	_Legs[2] = new MiLeg(2, Vec3(-0.235, -0.05, 0));
+	_Legs[3] = new MiLeg(3, Vec3(-0.235, 0.05, 0));
 
-	_feetPosNormalStand << 0.1881, 0.1881, -0.1881, -0.1881,
+	_feetPosNormalStand << 0.235, 0.235, -0.235, -0.235,
 			-0.1300, 0.1300, -0.1300, 0.1300,
 			-0.3200, -0.3200, -0.3200, -0.3200;
 
@@ -209,11 +212,13 @@ CYBERDOGRobot::CYBERDOGRobot()
 	_robVelLimitY << -0.3, 0.3;
 	_robVelLimitYaw << -0.5, 0.5;
 
-
 #ifdef COMPILE_WITH_REAL_ROBOT
 	_mass = 6.52;
 	_pcb << 0.04, 0.0, 0.0;
-	_Ib = Vec3(0.0792, 0.2085, 0.2265).asDiagonal();
+//	_Ib = Vec3(0.0792, 0.2085, 0.2265).asDiagonal();
+	_Ib << 1.284440010786057e-01, -1.564799924381077e-03, -5.737599916756153e-03,
+			3.205142542719841e-02, 1.370674073696136e-01, 1.494587212800980e-01,
+			5.662297917297110e-05, 2.728030551224947e-03, -2.321734355064109e-04;
 #endif  // COMPILE_WITH_REAL_ROBOT
 
 #ifdef COMPILE_WITH_SIMULATION
