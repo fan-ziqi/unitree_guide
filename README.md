@@ -72,6 +72,18 @@ the robotics community are all welcome. Feel free to raise an issue ~ <br>
 
 # 移植
 
+## 编译
+
+```
+mkdir build && cd build
+cmake ..
+make -j8
+```
+
+可执行文件为`build/bin/junior_ctrl`，代码使用了实时进程，请使用sudo权限执行。
+
+## 改动
+
 * `WirelessHandle.cpp`、`WirelessHandle.h`、`IOSDK.cpp`、`IOSDK.h`
   中增加`#if defined(ROBOT_TYPE_A1) || defined(ROBOT_TYPE_Go1)`宏定义
 * 中增加
