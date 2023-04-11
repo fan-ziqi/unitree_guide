@@ -79,6 +79,9 @@ void IOCYBERDOG::sendRecv(const LowlevelCmd *cmd, LowlevelState *state)
 
 void IOCYBERDOG::UserCode()
 {
+	cyberdogData = robot_data;
+	motor_cmd = cyberdogCmd;
+	
 	if((count++) % 1000 == 0)
 	{
 		printf("interval:---------%.4f-------------\n", cyberdogData.ctrl_topic_interval);
