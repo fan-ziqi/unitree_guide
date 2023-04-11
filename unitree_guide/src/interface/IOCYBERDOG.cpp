@@ -77,6 +77,51 @@ void IOCYBERDOG::sendRecv(const LowlevelCmd *cmd, LowlevelState *state)
 #endif  // COMPILE_WITH_MOVE_BASE
 }
 
+void IOCYBERDOG::UserCode()
+{
+	if((count++) % 1000 == 0)
+	{
+		printf("interval:---------%.4f-------------\n", cyberdogData.ctrl_topic_interval);
+		printf("rpy [3]:");
+		for(int i = 0; i < 3; i++)
+			printf(" %.2f", cyberdogData.rpy[i]);
+		printf("\nacc [3]:");
+		for(int i = 0; i < 3; i++)
+			printf(" %.2f", cyberdogData.acc[i]);
+		printf("\nquat[4]:");
+		for(int i = 0; i < 4; i++)
+			printf(" %.2f", cyberdogData.quat[i]);
+		printf("\nomeg[3]:");
+		for(int i = 0; i < 3; i++)
+			printf(" %.2f", cyberdogData.omega[i]);
+		printf("\nq  [12]:");
+		for(int i = 0; i < 12; i++)
+			printf(" %.2f", cyberdogData.q[i]);
+		printf("\nqd [12]:");
+		for(int i = 0; i < 12; i++)
+			printf(" %.2f", cyberdogData.qd[i]);
+		printf("\ntau[12]:");
+		for(int i = 0; i < 12; i++)
+			printf(" %.2f", cyberdogData.tau[i]);
+		printf("\nq_des[12]:");
+		for(int i = 0; i < 12; i++)
+			printf(" %.2f", cyberdogCmd.q_des[i]);
+		printf("\nqd_des[12]:");
+		for(int i = 0; i < 12; i++)
+			printf(" %.2f", cyberdogCmd.qd_des[i]);
+		printf("\nkp_des[12]:");
+		for(int i = 0; i < 12; i++)
+			printf(" %.2f", cyberdogCmd.kp_des[i]);
+		printf("\nkd_des[12]:");
+		for(int i = 0; i < 12; i++)
+			printf(" %.2f", cyberdogCmd.kd_des[i]);
+		printf("\ntau_des[12]:");
+		for(int i = 0; i < 12; i++)
+			printf(" %.2f", cyberdogCmd.tau_des[i]);
+		printf("\n\n");
+	}
+}
+
 #endif
 
 #endif  // COMPILE_WITH_REAL_ROBOT

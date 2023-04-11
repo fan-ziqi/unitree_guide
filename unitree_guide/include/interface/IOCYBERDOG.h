@@ -29,7 +29,8 @@ public:
 private:
 	CyberdogData cyberdogData;
 	CyberdogCmd cyberdogCmd;
-	void UserCode() {}
+	void UserCode();
+	long long count = 0;
 
 #ifdef COMPILE_WITH_MOVE_BASE
 	ros::NodeHandle _nh;
