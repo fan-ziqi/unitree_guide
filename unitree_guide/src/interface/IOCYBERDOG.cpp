@@ -5,6 +5,8 @@
 #include "interface/IOCYBERDOG.h"
 #include "interface/KeyBoard.h"
 
+//#define DEBUG_MOTOR
+
 IOCYBERDOG::IOCYBERDOG()
 		: CustomInterface(500)
 {
@@ -82,7 +84,9 @@ void IOCYBERDOG::UserCode()
 {
 	cyberdogData = robot_data;
 	motor_cmd = cyberdogCmd;
-	
+
+#ifdef DEBUG_MOTOR
+
 	if((count++) % 1000 == 0)
 	{
 		printf("interval:---------%.4f-------------\n", cyberdogData.ctrl_topic_interval);
@@ -124,6 +128,7 @@ void IOCYBERDOG::UserCode()
 			printf(" %.2f", cyberdogCmd.tau_des[i]);
 		printf("\n\n");
 	}
+#endif // DEBUG_MOTOR
 }
 
 #endif
