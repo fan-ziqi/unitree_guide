@@ -199,14 +199,14 @@ Go1Robot::Go1Robot()
  * */
 CYBERDOGRobot::CYBERDOGRobot()
 {
-	_Legs[0] = new MiLeg(0, Vec3(0.235, -0.05, 0));
-	_Legs[1] = new MiLeg(1, Vec3(0.235, 0.05, 0));
-	_Legs[2] = new MiLeg(2, Vec3(-0.235, -0.05, 0));
-	_Legs[3] = new MiLeg(3, Vec3(-0.235, 0.05, 0));
+	_Legs[0] = new CYBERDOGLeg(0, Vec3(0.235, -0.05, 0));
+	_Legs[1] = new CYBERDOGLeg(1, Vec3(0.235, 0.05, 0));
+	_Legs[2] = new CYBERDOGLeg(2, Vec3(-0.235, -0.05, 0));
+	_Legs[3] = new CYBERDOGLeg(3, Vec3(-0.235, 0.05, 0));
 
-	_feetPosNormalStand << 0.235, 0.235, -0.235, -0.235,
-			-0.1300, 0.1300, -0.1300, 0.1300,
-			-0.3200, -0.3200, -0.3200, -0.3200;
+	_feetPosNormalStand << 0.235, 0.235, -0.235, -0.235, //abad_x
+			-0.15715, 0.15715, -0.15715, 0.15715, //abad_y  + abad_link_length
+			-0.2800, -0.2800, -0.2800, -0.2800; // 调试出来的吗？
 
 	_robVelLimitX << -0.4, 0.4;
 	_robVelLimitY << -0.3, 0.3;
@@ -222,8 +222,9 @@ CYBERDOGRobot::CYBERDOGRobot()
 #endif  // COMPILE_WITH_REAL_ROBOT
 
 #ifdef COMPILE_WITH_SIMULATION
-	_mass = 12.0;
+	_mass = 6.52 + 12 * 0.55 + (0.509 + 0.664 + 0.114) * 4; // 12.328
 	_pcb << 0.0, 0.0, 0.0;
-	_Ib = Vec3(0.0792, 0.2085, 0.2265).asDiagonal();
+//	_Ib = Vec3(0.032051, 0.13707, 0.14946).asDiagonal();
+	_Ib = Vec3(0.0792, 0.2085, 0.2265).asDiagonal(); // USE GO1
 #endif  // COMPILE_WITH_SIMULATION
 }

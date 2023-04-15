@@ -152,10 +152,10 @@ make -j8
   
     CYBERDOGRobot::CYBERDOGRobot()
     {
-        _Legs[0] = new MiLeg(0, Vec3(0.1881, -0.04675, 0));
-        _Legs[1] = new MiLeg(1, Vec3(0.1881, 0.04675, 0));
-        _Legs[2] = new MiLeg(2, Vec3(-0.1881, -0.04675, 0));
-        _Legs[3] = new MiLeg(3, Vec3(-0.1881, 0.04675, 0));
+        _Legs[0] = new CYBERDOGLeg(0, Vec3(0.1881, -0.04675, 0));
+        _Legs[1] = new CYBERDOGLeg(1, Vec3(0.1881, 0.04675, 0));
+        _Legs[2] = new CYBERDOGLeg(2, Vec3(-0.1881, -0.04675, 0));
+        _Legs[3] = new CYBERDOGLeg(3, Vec3(-0.1881, 0.04675, 0));
     
         _feetPosNormalStand << 0.1881, 0.1881, -0.1881, -0.1881,
                 -0.1300, 0.1300, -0.1300, 0.1300,

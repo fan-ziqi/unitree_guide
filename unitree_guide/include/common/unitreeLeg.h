@@ -99,12 +99,12 @@ public:
 	~Go1Leg() {}
 };
 
-class MiLeg : public QuadrupedLeg
+class CYBERDOGLeg : public QuadrupedLeg
 {
 public:
-	MiLeg(const int legID, const Vec3 pHip2B)
+	CYBERDOGLeg(const int legID, const Vec3 pHip2B)
 			: QuadrupedLeg(legID, 0.10715, 0.2, 0.217, pHip2B) {}
-	~MiLeg() {}
+	~CYBERDOGLeg() {}
 };
 
 #endif  // UNITREELEG_H

@@ -63,6 +63,7 @@ void IOCYBERDOG::sendRecv(const LowlevelCmd *cmd, LowlevelState *state)
 
 #ifdef COMPILE_WITH_MOVE_BASE
 	_joint_state.header.stamp = ros::Time::now();
+	// 需要修改
 	_joint_state.name = {"FR_hip_joint", "FR_thigh_joint", "FR_calf_joint",
 						 "FL_hip_joint", "FL_thigh_joint", "FL_calf_joint",
 						 "RR_hip_joint", "RR_thigh_joint", "RR_calf_joint",

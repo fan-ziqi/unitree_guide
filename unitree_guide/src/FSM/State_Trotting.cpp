@@ -32,6 +32,15 @@ State_Trotting::State_Trotting(CtrlComponents *ctrlComp)
 	_KdSwing = Vec3(10, 10, 10).asDiagonal();
 #endif
 
+#ifdef ROBOT_TYPE_CYBERDOG
+	_Kpp = Vec3(20, 20, 70).asDiagonal();
+	_Kdp = Vec3(10, 10, 10).asDiagonal();
+	_kpw = 500;
+	_Kdw = Vec3(50, 50, 50).asDiagonal();
+	_KpSwing = Vec3(400, 400, 400).asDiagonal();
+	_KdSwing = Vec3(10, 10, 10).asDiagonal();
+#endif
+
 	_vxLim = _robModel->getRobVelLimitX();
 	_vyLim = _robModel->getRobVelLimitY();
 	_wyawLim = _robModel->getRobVelLimitYaw();
