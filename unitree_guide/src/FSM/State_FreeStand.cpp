@@ -26,7 +26,7 @@ void State_FreeStand::enter()
 		}
 		else if(_ctrlComp->ctrlPlatform == CtrlPlatform::REALROBOT)
 		{
-			_lowCmd->setRealStanceGain(i);
+			_lowCmd->setRealStanceGain_FreeStand(i);
 		}
 		_lowCmd->setZeroDq(i);
 		_lowCmd->setZeroTau(i);

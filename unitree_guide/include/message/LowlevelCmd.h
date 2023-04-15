@@ -103,13 +103,25 @@ struct LowlevelCmd
 	{
 		motorCmd[legID * 3 + 0].mode = 10;
 		motorCmd[legID * 3 + 0].Kp = 100; // 60
-		motorCmd[legID * 3 + 0].Kd = 2; // 5
+		motorCmd[legID * 3 + 0].Kd = 5; // 5
 		motorCmd[legID * 3 + 1].mode = 10;
 		motorCmd[legID * 3 + 1].Kp = 100; // 40
-		motorCmd[legID * 3 + 1].Kd = 2; // 4
+		motorCmd[legID * 3 + 1].Kd = 5; // 4
 		motorCmd[legID * 3 + 2].mode = 10;
 		motorCmd[legID * 3 + 2].Kp = 100; // 80
-		motorCmd[legID * 3 + 2].Kd = 2; // 7
+		motorCmd[legID * 3 + 2].Kd = 5; // 7
+	}
+	void setRealStanceGain_FreeStand(int legID)
+	{
+		motorCmd[legID * 3 + 0].mode = 10;
+		motorCmd[legID * 3 + 0].Kp = 60;
+		motorCmd[legID * 3 + 0].Kd = 5;
+		motorCmd[legID * 3 + 1].mode = 10;
+		motorCmd[legID * 3 + 1].Kp = 40;
+		motorCmd[legID * 3 + 1].Kd = 4;
+		motorCmd[legID * 3 + 2].mode = 10;
+		motorCmd[legID * 3 + 2].Kp = 80;
+		motorCmd[legID * 3 + 2].Kd = 7;
 	}
 	void setZeroGain(int legID)
 	{
