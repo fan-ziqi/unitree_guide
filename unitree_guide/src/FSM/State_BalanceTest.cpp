@@ -89,6 +89,17 @@ void State_BalanceTest::calcTau()
 	_posFeet2BGlobal = _est->getPosFeet2BGlobal();
 
 	_forceFeetGlobal = -_balCtrl->calF(_ddPcd, _dWbd, _B2G_RotMat, _posFeet2BGlobal, *_contact);
+
+	// TEST
+	for(int i = 0; i < 3; i++)
+	{
+		for(int j = 0; j < 4; j++)
+		{
+			std::cout << _forceFeetGlobal(i, j) << " ";
+		}
+	}
+	std::cout << std::endl;
+
 	_forceFeetBody = _G2B_RotMat * _forceFeetGlobal;
 
 	_q = vec34ToVec12(_lowState->getQ());

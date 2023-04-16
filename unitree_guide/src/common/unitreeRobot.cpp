@@ -194,9 +194,6 @@ Go1Robot::Go1Robot()
 #endif  // COMPILE_WITH_SIMULATION
 }
 
-/*
- *
- * */
 CYBERDOGRobot::CYBERDOGRobot()
 {
 	_Legs[0] = new CYBERDOGLeg(0, Vec3(0.235, -0.05, 0));
@@ -213,14 +210,20 @@ CYBERDOGRobot::CYBERDOGRobot()
 	_robVelLimitYaw << -0.5, 0.5;
 
 #ifdef COMPILE_WITH_REAL_ROBOT
-	_mass = 13.2; // 6.52 + 12 * 0.55 + (0.509 + 0.664 + 0.114) * 4; // 12.328
+	//	_mass = 13.2; // 6.52 + 12 * 0.55 + (0.509 + 0.664 + 0.114) * 4; // 12.328
+	//	_pcb << 0.0, 0.0, 0.0;
+	//	_Ib = Vec3(0.13, 0.54, 0.63).asDiagonal();
+	_mass = 12.0;
 	_pcb << 0.0, 0.0, 0.0;
-	_Ib = Vec3(0.13, 0.54, 0.63).asDiagonal();
+	_Ib = Vec3(0.0792, 0.2085, 0.2265).asDiagonal();
 #endif  // COMPILE_WITH_REAL_ROBOT
 
 #ifdef COMPILE_WITH_SIMULATION
-	_mass = 13.2; // 6.52 + 12 * 0.55 + (0.509 + 0.664 + 0.114) * 4; // 12.328
+//	_mass = 13.2; // 6.52 + 12 * 0.55 + (0.509 + 0.664 + 0.114) * 4; // 12.328
+//	_pcb << 0.0, 0.0, 0.0;
+//	_Ib = Vec3(0.13, 0.54, 0.63).asDiagonal();
+	_mass = 12.0;
 	_pcb << 0.0, 0.0, 0.0;
-	_Ib = Vec3(0.13, 0.54, 0.63).asDiagonal();
+	_Ib = Vec3(0.0792, 0.2085, 0.2265).asDiagonal();
 #endif  // COMPILE_WITH_SIMULATION
 }
