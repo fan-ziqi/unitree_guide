@@ -132,6 +132,7 @@ link_directories(
 file(GLOB_RECURSE SRC_LIST
         "src/*/*.cpp"
         "src/*/*.cc"
+        "src/*/*/*.cpp"
         )
 
 add_executable(junior_ctrl src/main.cpp ${SRC_LIST})

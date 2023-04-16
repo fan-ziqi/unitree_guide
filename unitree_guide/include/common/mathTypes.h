@@ -75,20 +75,28 @@ using MatX = typename Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>;
 /************************/
 /****** Functions *******/
 /************************/
-inline Vec34 vec12ToVec34(Vec12 vec12){
-    Vec34 vec34;
-    for(int i(0); i < 4; ++i){
-        vec34.col(i) = vec12.segment(3*i, 3);
-    }
-    return vec34;
+inline Vec34 vec12ToVec34(Vec12 vec12)
+{
+	Vec34 vec34;
+	for(int i(0); i < 4; ++i)
+	{
+		vec34.col(i) = vec12.segment(3 * i, 3);
+	}
+	return vec34;
 }
 
-inline Vec12 vec34ToVec12(Vec34 vec34){
-    Vec12 vec12;
-    for(int i(0); i < 4; ++i){
-        vec12.segment(3*i, 3) = vec34.col(i);
-    }
-    return vec12;
+inline Vec12 vec34ToVec12(Vec34 vec34)
+{
+	Vec12 vec12;
+	for(int i(0); i < 4; ++i)
+	{
+		vec12.segment(3 * i, 3) = vec34.col(i);
+	}
+	return vec12;
 }
+
+// Dynamically sized vector
+template<typename T>
+using DVec = typename Eigen::Matrix<T, Eigen::Dynamic, 1>;
 
 #endif  // MATHTYPES_H
