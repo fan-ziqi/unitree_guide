@@ -203,7 +203,7 @@ CYBERDOGRobot::CYBERDOGRobot()
 
 	_feetPosNormalStand << 0.235, 0.235, -0.235, -0.235, //abad_x
 			-0.15715, 0.15715, -0.15715, 0.15715, //abad_y  + abad_link_length
-			-0.2800, -0.2800, -0.2800, -0.2800; // 调试出来的吗？
+			-0.2800, -0.2800, -0.2800, -0.2800; // 调试出来的吗？我也不知道
 
 	_robVelLimitX << -0.4, 0.4;
 	_robVelLimitY << -0.3, 0.3;
@@ -213,17 +213,14 @@ CYBERDOGRobot::CYBERDOGRobot()
 	//	_mass = 13.2; // 6.52 + 12 * 0.55 + (0.509 + 0.664 + 0.114) * 4; // 12.328
 	//	_pcb << 0.0, 0.0, 0.0;
 	//	_Ib = Vec3(0.13, 0.54, 0.63).asDiagonal();
-	_mass = 12.0;
-	_pcb << 0.0, 0.0, 0.0;
-	_Ib = Vec3(0.0792, 0.2085, 0.2265).asDiagonal();
+	_mass = 6.52 + 12 * 0.55 + (0.509 + 0.664 + 0.114) * 4 - 0.2; // 12.328
+	_pcb << -0.05, 0.0, 0.0; // 抬头后移，低头前移 TODO 铁蛋抬头，需要调整
+	_Ib = Vec3(0.0792, 0.2085, 0.2265).asDiagonal(); // USE GO1
 #endif  // COMPILE_WITH_REAL_ROBOT
 
 #ifdef COMPILE_WITH_SIMULATION
-//	_mass = 13.2; // 6.52 + 12 * 0.55 + (0.509 + 0.664 + 0.114) * 4; // 12.328
-//	_pcb << 0.0, 0.0, 0.0;
-//	_Ib = Vec3(0.13, 0.54, 0.63).asDiagonal();
-	_mass = 12.0;
-	_pcb << 0.0, 0.0, 0.0;
-	_Ib = Vec3(0.0792, 0.2085, 0.2265).asDiagonal();
+	_mass = 6.52 + 12 * 0.55 + (0.509 + 0.664 + 0.114) * 4; // 12.328
+	_pcb << 0, 0.0, 0.0; // 抬头后移，低头前移
+	_Ib = Vec3(0.0792, 0.2085, 0.2265).asDiagonal(); // USE GO1
 #endif  // COMPILE_WITH_SIMULATION
 }
