@@ -16,6 +16,7 @@ FSM::FSM(CtrlComponents *ctrlComp)
 	_stateList.balanceTest = new State_BalanceTest(_ctrlComp);
 	_stateList.swingTest = new State_SwingTest(_ctrlComp);
 	_stateList.stepTest = new State_StepTest(_ctrlComp);
+	_stateList.backFlip = new State_BackFlip(_ctrlComp);
 #ifdef COMPILE_WITH_MOVE_BASE
 	_stateList.moveBase = new State_move_base(_ctrlComp);
 #endif  // COMPILE_WITH_MOVE_BASE
@@ -41,6 +42,8 @@ void FSM::run()
 	_ctrlComp->sendRecv();
 	_ctrlComp->runWaveGen();
 	_ctrlComp->estimator->run();
+
+	// 测试后空翻，可能需要暂时关闭安全检测
 	if(!checkSafty())
 	{
 		_ctrlComp->ioInter->setPassive();
@@ -97,6 +100,9 @@ FSMState *FSM::getNextState(FSMStateName stateName)
 			break;
 		case FSMStateName::STEPTEST:
 			return _stateList.stepTest;
+			break;
+		case FSMStateName::BACKFLIP:
+			return _stateList.backFlip;
 			break;
 #ifdef COMPILE_WITH_MOVE_BASE
 			case FSMStateName::MOVE_BASE:

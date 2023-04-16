@@ -13,57 +13,62 @@
 #include "FSM/State_BalanceTest.h"
 #include "FSM/State_SwingTest.h"
 #include "FSM/State_StepTest.h"
+#include "FSM/State_BackFlip.h"
 #include "common/enumClass.h"
 #include "control/CtrlComponents.h"
 #ifdef COMPILE_WITH_MOVE_BASE
-    #include "FSM/State_move_base.h"
+#include "FSM/State_move_base.h"
 #endif  // COMPILE_WITH_MOVE_BASE
 
-struct FSMStateList{
-    FSMState *invalid;
-    State_Passive *passive;
-    State_FixedStand *fixedStand;
-    State_FreeStand *freeStand;
-    State_Trotting *trotting;
-    State_BalanceTest *balanceTest;
-    State_SwingTest *swingTest;
-    State_StepTest *stepTest;
+struct FSMStateList
+{
+	FSMState *invalid;
+	State_Passive *passive;
+	State_FixedStand *fixedStand;
+	State_FreeStand *freeStand;
+	State_Trotting *trotting;
+	State_BalanceTest *balanceTest;
+	State_SwingTest *swingTest;
+	State_StepTest *stepTest;
+	State_BackFlip *backFlip;
 #ifdef COMPILE_WITH_MOVE_BASE
-    State_move_base *moveBase;
+	State_move_base *moveBase;
 #endif  // COMPILE_WITH_MOVE_BASE
 
-    void deletePtr(){
-        delete invalid;
-        delete passive;
-        delete fixedStand;
-        delete freeStand;
-        delete trotting;
-        delete balanceTest;
-        delete swingTest;
-        delete stepTest;
+	void deletePtr()
+	{
+		delete invalid;
+		delete passive;
+		delete fixedStand;
+		delete freeStand;
+		delete trotting;
+		delete balanceTest;
+		delete swingTest;
+		delete stepTest;
 #ifdef COMPILE_WITH_MOVE_BASE
-        delete moveBase;
+		delete moveBase;
 #endif  // COMPILE_WITH_MOVE_BASE
-    }
+	}
 };
 
-class FSM{
+class FSM
+{
 public:
-    FSM(CtrlComponents *ctrlComp);
-    ~FSM();
-    void initialize();
-    void run();
+	FSM(CtrlComponents *ctrlComp);
+	~FSM();
+	void initialize();
+	void run();
 private:
-    FSMState* getNextState(FSMStateName stateName);
-    bool checkSafty();
-    CtrlComponents *_ctrlComp;
-    FSMState *_currentState;
-    FSMState *_nextState;
-    FSMStateName _nextStateName;
-    FSMStateList _stateList;
-    FSMMode _mode;
-    long long _startTime;
-    int count;
+	FSMState *getNextState(FSMStateName stateName);
+	bool checkSafty();
+	CtrlComponents *_ctrlComp;
+	FSMState *_currentState;
+	FSMState *_nextState;
+	FSMStateName _nextStateName;
+	FSMStateList _stateList;
+	FSMMode _mode;
+	long long _startTime;
+	int count;
 };
 
 

@@ -71,6 +71,10 @@ FSMStateName State_FixedStand::checkChange()
 	{
 		return FSMStateName::STEPTEST;
 	}
+	else if(_lowState->userCmd == UserCommand::BACKFLIP)
+	{
+		return FSMStateName::BACKFLIP;
+	}
 #ifdef COMPILE_WITH_MOVE_BASE
 		else if(_lowState->userCmd == UserCommand::L2_Y){
 			return FSMStateName::MOVE_BASE;
