@@ -9,15 +9,14 @@ State_BackFlip::State_BackFlip(CtrlComponents *ctrlComp)
 {
 	zero_vec3.setZero();
 	f_ff << 0.f, 0.f, -25.f;
-
-	_data_reader = new DataReader(RobotType::CYBERDOG, FSMStateName::BACKFLIP);
-
-	backflip_ctrl_ = new BackFlipCtrl<float>(_data_reader, 0.002);
-	backflip_ctrl_->SetParameter();
 }
 
 void State_BackFlip::enter()
 {
+	_data_reader = new DataReader(RobotType::CYBERDOG, FSMStateName::BACKFLIP);
+	backflip_ctrl_ = new BackFlipCtrl<float>(_data_reader, 0.002);
+	backflip_ctrl_->SetParameter();
+
 	// Reset iteration counter
 	iter = 0;
 	_state_iter = 0;

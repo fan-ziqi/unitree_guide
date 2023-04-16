@@ -14,7 +14,7 @@ DataReader::DataReader(const RobotType &type, FSMStateName stateNameIn)
 	if(stateNameIn == FSMStateName::BACKFLIP)
 	{
 		load_control_plan(THIS_COM "src/unitree_guide/unitree_guide/src/control/BackFlip/mc_flip.dat");
-		printf("[Backflip DataReader] Setup for mini cheetah\n");
+		printf("[Backflip DataReader] Setup for cyberdog\n");
 	}
 //    else if (stateNameIn == FSM_StateName::FRONTJUMP) {
 //      //load_control_plan(THIS_COM "user/MIT_Controller/Controllers/FrontJump/front_jump_data.dat"); // front_jump_data.dat for succesfull test 1 file
@@ -32,6 +32,7 @@ void DataReader::load_control_plan(const char *filename)
 	if(!f)
 	{
 		printf("[Backflip DataReader] Error loading control plan!\n");
+		printf("please check THIS_COM in file unitree_guide/src/control/BackFlip/DataReader.cpp\n");
 		return;
 	}
 	fseek(f, 0, SEEK_END);
