@@ -16,6 +16,7 @@ State_BackFlip::State_BackFlip(CtrlComponents *ctrlComp)
 
 void State_BackFlip::enter()
 {
+	// 与mit不同，吧DataReader放到这里了，防止FSM一运行就有输出
 	_data_reader = new DataReader(RobotType::CYBERDOG, FSMStateName::BACKFLIP);
 	backflip_ctrl_ = new BackFlipCtrl<float>(_data_reader, 0.002);
 	backflip_ctrl_->SetParameter();
