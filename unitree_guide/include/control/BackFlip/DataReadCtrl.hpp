@@ -1,9 +1,7 @@
 #ifndef DATAREAD_CTRL
 #define DATAREAD_CTRL
 
-#include <cstdio>
-#include <vector>
-#include "DataReader.hpp"
+#include "control/BackFlip/DataReader.hpp"
 //#include <Dynamics/FloatingBaseModel.h>
 #include "message/LowlevelState.h"
 #include "message/LowlevelCmd.h"
@@ -52,7 +50,7 @@ public:
 		for(int leg(0); leg < 4; ++leg)
 		{
 			if(_state_machine_time > 2.7 && -data->motorState[leg * 3 + 1].q >
-			                                -_q_knee_max && data->motorState[leg * 3 + 1].dq > _qdot_knee_max)
+			                                _q_knee_max && data->motorState[leg * 3 + 1].dq > _qdot_knee_max)
 			{
 				printf("Contact detected at leg [%d] => Switch to the landing phase !!! \n", leg);
 				printf("state_machine_time: %lf \n", _state_machine_time);

@@ -10,18 +10,25 @@
 DataReader::DataReader(const RobotType &type, FSMStateName stateNameIn)
 		: _type(type)
 {
-
-	if(stateNameIn == FSMStateName::BACKFLIP)
+	if(_type == RobotType::CYBERDOG)
 	{
-		load_control_plan(THIS_COM "src/unitree_guide/unitree_guide/src/control/BackFlip/mc_flip.dat");
-		printf("[Backflip DataReader] Setup for cyberdog\n");
+		if(stateNameIn == FSMStateName::BACKFLIP)
+		{
+			load_control_plan(THIS_COM "src/unitree_guide/unitree_guide/src/control/BackFlip/mc_flip.dat");
+			printf("[Backflip DataReader] Setup for cyberdog\n");
+		}
+//		else if(stateNameIn == FSM_StateName::FRONTJUMP)
+//		{
+//			//load_control_plan(THIS_COM "user/MIT_Controller/Controllers/FrontJump/front_jump_data.dat"); // front_jump_data.dat for succesfull test 1 file
+//			load_control_plan(THIS_COM "config/front_jump_pitchup_v2.dat");
+//			printf("[Front Jump DataReader] Setup for mini cheetah\n");
+//		}
 	}
-//    else if (stateNameIn == FSM_StateName::FRONTJUMP) {
-//      //load_control_plan(THIS_COM "user/MIT_Controller/Controllers/FrontJump/front_jump_data.dat"); // front_jump_data.dat for succesfull test 1 file
-//      load_control_plan(THIS_COM "config/front_jump_pitchup_v2.dat");
-//      printf("[Front Jump DataReader] Setup for mini cheetah\n");
-//    }
-
+	else
+	{
+		printf("[Backflip DataReader] Setup for others\n");
+		load_control_plan(THIS_COM "src/unitree_guide/unitree_guide/src/control/BackFlip/mc_flip.dat");
+	}
 	printf("[Backflip DataReader] Constructed.\n");
 }
 

@@ -21,6 +21,7 @@ void BackFlipCtrl<T>::OneStep(float _curr_time, bool b_preparation, LowlevelCmd 
 	{
 		for(int jidx = 0; jidx < 3; ++jidx)
 		{
+			// mit代码中，关节2和关节3是反的，需要对其反向
 			int _leg_num = 3 * leg + jidx;
 			if(_leg_num == 0 || _leg_num == 3 || _leg_num == 6 || _leg_num == 9)
 			{
@@ -49,8 +50,8 @@ void BackFlipCtrl<T>::_update_joint_command()
 	int tuck_iteration(600);
 	int ramp_end_iteration(650);
 
-	this->_Kp_joint = {80, 80.0, 80.0}; //10
-	this->_Kd_joint = {0.5, 0.5, 0.5}; //1
+	this->_Kp_joint = {80.0, 80.0, 80.0}; // 10
+	this->_Kd_joint = {0.5, 0.5, 0.5}; // 1
 
 	float tau_mult;
 
@@ -74,8 +75,7 @@ void BackFlipCtrl<T>::_update_joint_command()
 	}
 	else
 	{
-		tau_mult = 3.5;
-		// tau_mult = 1.;
+		tau_mult = 3.5; // 1.2
 	}
 
 	if(DataCtrl::current_iteration > DataCtrl::_data_reader->plan_timesteps - 1)
@@ -142,8 +142,8 @@ void BackFlipCtrl<T>::_update_joint_command()
 
 		q_des_front = (1 - s) * q_des_front_0 + s * q_des_front_f;
 		q_des_rear = (1 - s) * q_des_rear_0 + s * q_des_rear_f;
-		this->_Kp_joint = {25.0, 25.0, 25.0};//25
-		this->_Kd_joint = {1.5, 1.5, 1.5};//1.5
+		this->_Kp_joint = {25.0, 25.0, 25.0}; // 25
+		this->_Kd_joint = {1.5, 1.5, 1.5}; // 1.5
 
 	}
 
