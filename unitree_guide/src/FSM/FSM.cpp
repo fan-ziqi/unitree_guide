@@ -122,9 +122,17 @@ bool FSM::checkSafty()
 //	std::cout << "getRotMat: " << std::endl;
 //	std::cout << _ctrlComp->lowState->getRotMat() << std::endl;
 //	std::cout << std::endl;
-	if(_ctrlComp->lowState->getRotMat()(2, 2) < 0.5)
+	if(_currentState->checkSafeOrientation)
 	{
-		return false;
+		if(_ctrlComp->lowState->getRotMat()(2, 2) < 0.5)
+		{
+			std::cout << "broken: Orientation Safety Ceck FAIL" << std::endl;
+			return false;
+		}
+		else
+		{
+			return true;
+		}
 	}
 	else
 	{

@@ -9,6 +9,9 @@ State_FixedStand::State_FixedStand(CtrlComponents *ctrlComp)
 
 void State_FixedStand::enter()
 {
+	// 关闭安全检测
+	this->checkSafeOrientation = false;
+
 	for(int i = 0; i < 4; i++)
 	{
 		if(_ctrlComp->ctrlPlatform == CtrlPlatform::GAZEBO)

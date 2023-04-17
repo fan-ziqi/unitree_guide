@@ -8,6 +8,8 @@ State_BalanceTest::State_BalanceTest(CtrlComponents *ctrlComp)
 		  _est(ctrlComp->estimator), _robModel(ctrlComp->robotModel),
 		  _balCtrl(ctrlComp->balCtrl), _contact(ctrlComp->contact)
 {
+	// 开启安全检测
+	this->checkSafeOrientation = true;
 
 	_xMax = 0.05;
 	_xMin = -_xMax;

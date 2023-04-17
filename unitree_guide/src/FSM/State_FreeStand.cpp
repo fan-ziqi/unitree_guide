@@ -6,6 +6,9 @@
 State_FreeStand::State_FreeStand(CtrlComponents *ctrlComp)
 		: FSMState(ctrlComp, FSMStateName::FREESTAND, "free stand")
 {
+	// 开启安全检测
+	this->checkSafeOrientation = true;
+
 	_rowMax = 20 * M_PI / 180;
 	_rowMin = -_rowMax;
 	_pitchMax = 15 * M_PI / 180;

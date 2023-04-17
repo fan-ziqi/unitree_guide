@@ -7,6 +7,9 @@
 State_BackFlip::State_BackFlip(CtrlComponents *ctrlComp)
 		: FSMState(ctrlComp, FSMStateName::BACKFLIP, "back flip")
 {
+	// 后空翻关闭安全检测
+	this->checkSafeOrientation = false;
+
 	zero_vec3.setZero();
 	f_ff << 0.f, 0.f, -25.f;
 }

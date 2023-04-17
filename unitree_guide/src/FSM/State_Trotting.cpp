@@ -10,6 +10,9 @@ State_Trotting::State_Trotting(CtrlComponents *ctrlComp)
 		  _contact(ctrlComp->contact), _robModel(ctrlComp->robotModel),
 		  _balCtrl(ctrlComp->balCtrl)
 {
+	// 开启安全检测
+	this->checkSafeOrientation = true;
+
 	_gait = new GaitGenerator(ctrlComp);
 
 	_gaitHeight = 0.08;

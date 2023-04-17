@@ -6,6 +6,9 @@
 State_SwingTest::State_SwingTest(CtrlComponents *ctrlComp)
 		: FSMState(ctrlComp, FSMStateName::SWINGTEST, "swingTest")
 {
+	// 开启安全检测
+	this->checkSafeOrientation = true;
+
 	_xMin = -0.15;
 	_xMax = 0.10;
 	_yMin = -0.15;
