@@ -33,7 +33,7 @@ void State_BackFlip::enter()
 	{
 		for(size_t j(0); j < 3; ++j)
 		{
-			initial_jpos[i][j] = _lowState->motorState[i * 4 + j].q;
+			initial_jpos[i][j] = _lowState->motorState[i * 3 + j].q;
 		}
 	}
 }
@@ -87,11 +87,11 @@ bool State_BackFlip::_Initialization()
 		{
 			for(int jidx = 0; jidx < 3; ++jidx)
 			{
-				_lowCmd->motorCmd[leg * 4 + jidx].q = initial_jpos[leg][jidx];
-				_lowCmd->motorCmd[leg * 4 + jidx].tau = 0.;
-				_lowCmd->motorCmd[leg * 4 + jidx].dq = 0.;
-				_lowCmd->motorCmd[leg * 4 + jidx].Kp = 20.;
-				_lowCmd->motorCmd[leg * 4 + jidx].Kd = 2.;
+				_lowCmd->motorCmd[leg * 3 + jidx].q = initial_jpos[leg][jidx];
+				_lowCmd->motorCmd[leg * 3 + jidx].tau = 0.;
+				_lowCmd->motorCmd[leg * 3 + jidx].dq = 0.;
+				_lowCmd->motorCmd[leg * 3 + jidx].Kp = 20.;
+				_lowCmd->motorCmd[leg * 3 + jidx].Kd = 2.;
 			}
 		}
 		return true;
@@ -122,9 +122,9 @@ void State_BackFlip::_SafeCommand()
 	{
 		for(int jidx = 0; jidx < 3; ++jidx)
 		{
-			_lowCmd->motorCmd[leg * 4 + jidx].tau = 0.;
-			_lowCmd->motorCmd[leg * 4 + jidx].q = _lowState->motorState[leg * 4 + jidx].q;
-			_lowCmd->motorCmd[leg * 4 + jidx].dq = 0.;
+			_lowCmd->motorCmd[leg * 3 + jidx].tau = 0.;
+			_lowCmd->motorCmd[leg * 3 + jidx].q = _lowState->motorState[leg * 3 + jidx].q;
+			_lowCmd->motorCmd[leg * 3 + jidx].dq = 0.;
 		}
 	}
 }
