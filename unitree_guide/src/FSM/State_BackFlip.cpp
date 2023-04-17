@@ -29,11 +29,11 @@ void State_BackFlip::enter()
 	_b_first_visit = true;
 
 	// initial configuration, position
-	for(size_t i(0); i < 4; ++i)
+	for(int leg = 0; leg < 4; ++leg)
 	{
-		for(size_t j(0); j < 3; ++j)
+		for(int jidx = 0; jidx < 3; ++jidx)
 		{
-			initial_jpos[i][j] = _lowState->motorState[i * 3 + j].q;
+			initial_jpos[leg][jidx] = _lowState->motorState[leg * 3 + jidx].q;
 		}
 	}
 }
