@@ -70,7 +70,7 @@ Unitree_guide provides a basic quadruped robot controller for beginners. To achi
 tuning of parameters or more advanced methods (such as MPC etc.) might be required. Any contribution and good idea from
 the robotics community are all welcome. Feel free to raise an issue ~ <br>
 
-# 移植
+# 移植到Cyberdog
 
 ## 编译
 
@@ -86,7 +86,9 @@ make -j8
 
 * `WirelessHandle.cpp`、`WirelessHandle.h`、`IOSDK.cpp`、`IOSDK.h`
   中增加`#if defined(ROBOT_TYPE_A1) || defined(ROBOT_TYPE_Go1)`宏定义
-* 中增加
+  
+* 在`CMakeLists.txt`中增加`CYBERDOG`相关代码
+  
   ```cmake
   if(${ROBOT_TYPE} STREQUAL "A1")
     add_definitions(-DROBOT_TYPE_A1)
@@ -140,70 +142,277 @@ make -j8
     endif()
   endif()
   ```
-* 新增`IOCYBERDOG.cpp`、`IOCYBERDOG.h`接口文件
-* 修改`unitreeRobot.cpp`、`unitreeRobot.h`
-  ```c++
-    class CYBERDOGRobot : public QuadrupedRobot
-    {
-        public:
-        CYBERDOGRobot();
-        ~CYBERDOGRobot() {};
-    };
   
-    CYBERDOGRobot::CYBERDOGRobot()
-    {
-        _Legs[0] = new CYBERDOGLeg(0, Vec3(0.1881, -0.04675, 0));
-        _Legs[1] = new CYBERDOGLeg(1, Vec3(0.1881, 0.04675, 0));
-        _Legs[2] = new CYBERDOGLeg(2, Vec3(-0.1881, -0.04675, 0));
-        _Legs[3] = new CYBERDOGLeg(3, Vec3(-0.1881, 0.04675, 0));
-    
-        _feetPosNormalStand << 0.1881, 0.1881, -0.1881, -0.1881,
-                -0.1300, 0.1300, -0.1300, 0.1300,
-                -0.3200, -0.3200, -0.3200, -0.3200;
-    
-        _robVelLimitX << -0.4, 0.4;
-        _robVelLimitY << -0.3, 0.3;
-        _robVelLimitYaw << -0.5, 0.5;
-    
-    
-    #ifdef COMPILE_WITH_REAL_ROBOT
-        _mass = 6.52;
-        _pcb << 0.04, 0.0, 0.0;
-        _Ib = Vec3(0.0792, 0.2085, 0.2265).asDiagonal();
-    #endif  // COMPILE_WITH_REAL_ROBOT
-    
-    #ifdef COMPILE_WITH_SIMULATION
-        _mass = 12.0;
-        _pcb << 0.0, 0.0, 0.0;
-        _Ib = Vec3(0.0792, 0.2085, 0.2265).asDiagonal();
-    #endif  // COMPILE_WITH_SIMULATION
-    }
+* 新增`IOCYBERDOG.cpp`、`IOCYBERDOG.h`接口文件
+
+  ```cpp
+  #ifdef COMPILE_WITH_REAL_ROBOT
+  
+  #if defined(ROBOT_TYPE_CYBERDOG)
+  
+  #ifndef IOCYBERDOG_H
+  #define IOCYBERDOG_H
+  
+  #include "interface/IOInterface.h"
+  
+  // cyberdog接口
+  #include <CustomInterface.h>
+  
+  #ifdef COMPILE_WITH_MOVE_BASE
+  #include <ros/ros.h>
+  #include <ros/time.h>
+  #include <sensor_msgs/JointState.h>
+  #endif  // COMPILE_WITH_MOVE_BASE
+  
+  using CyberdogData = Robot_Data;
+  using CyberdogCmd = Motor_Cmd;
+  
+  class IOCYBERDOG : public CustomInterface, public IOInterface
+  {
+  public:
+  	IOCYBERDOG();
+  	~IOCYBERDOG() {}
+  	void sendRecv(const LowlevelCmd *cmd, LowlevelState *state);
+  
+  private:
+  	CyberdogData cyberdogData;
+  	CyberdogCmd cyberdogCmd;
+  	void UserCode();
+  	long long count = 0;
+  
+  #ifdef COMPILE_WITH_MOVE_BASE
+  	ros::NodeHandle _nh;
+  	ros::Publisher _pub;
+  	sensor_msgs::JointState _joint_state;
+  #endif  // COMPILE_WITH_MOVE_BASE
+  };
+  
+  #endif  // IOCYBERDOG_H
+  
+  #endif
+  
+  #endif  // COMPILE_WITH_REAL_ROBOT
+  ```
+
+  ```cpp
+  #ifdef COMPILE_WITH_REAL_ROBOT
+  
+  #if defined(ROBOT_TYPE_CYBERDOG)
+  
+  #include "interface/IOCYBERDOG.h"
+  #include "interface/KeyBoard.h"
+  
+  //#define DEBUG_MOTOR
+  
+  IOCYBERDOG::IOCYBERDOG()
+  		: CustomInterface(500)
+  {
+  	std::cout << "The control interface for real robot (Cyberdog)" << std::endl;
+  
+  	cmdPanel = new KeyBoard();
+  
+  #ifdef COMPILE_WITH_MOVE_BASE
+  	_pub = _nh.advertise<sensor_msgs::JointState>("/realRobot/joint_states", 20);
+  	_joint_state.name.resize(12);
+  	_joint_state.position.resize(12);
+  	_joint_state.velocity.resize(12);
+  	_joint_state.effort.resize(12);
+  #endif  // COMPILE_WITH_MOVE_BASE
+  }
+  
+  void IOCYBERDOG::sendRecv(const LowlevelCmd *cmd, LowlevelState *state)
+  {
+  	for(int i(0); i < 12; ++i)
+  	{
+  		cyberdogCmd.q_des[i] = cmd->motorCmd[i].q;
+  		cyberdogCmd.qd_des[i] = cmd->motorCmd[i].dq;
+  		cyberdogCmd.kp_des[i] = cmd->motorCmd[i].Kp;
+  		cyberdogCmd.kd_des[i] = cmd->motorCmd[i].Kd;
+  		cyberdogCmd.tau_des[i] = cmd->motorCmd[i].tau;
+  	}
+  
+  	for(int i(0); i < 12; ++i)
+  	{
+  		state->motorState[i].q = cyberdogData.q[i];
+  		state->motorState[i].dq = cyberdogData.qd[i];
+  		state->motorState[i].tauEst = cyberdogData.tau[i];
+  	}
+  
+  	//IMU
+  	for(int i = 0; i < 3; i++)
+  	{
+  		state->imu.accelerometer[i] = cyberdogData.acc[i];
+  	}
+  	// 注意 Cyberdog SDK 的四元数顺序为 xyzw 需要转成 wxyz
+  	state->imu.quaternion[0] = cyberdogData.quat[1];
+  	state->imu.quaternion[1] = cyberdogData.quat[2];
+  	state->imu.quaternion[2] = cyberdogData.quat[3];
+  	state->imu.quaternion[3] = cyberdogData.quat[0];
+  	for(int i = 0; i < 3; i++)
+  	{
+  		state->imu.gyroscope[i] = cyberdogData.omega[i];
+  	}
+  
+  	state->userCmd = cmdPanel->getUserCmd();
+  	state->userValue = cmdPanel->getUserValue();
+  
+  #ifdef COMPILE_WITH_MOVE_BASE
+  	_joint_state.header.stamp = ros::Time::now();
+  	_joint_state.name = {"FR_hip_joint", "FR_thigh_joint", "FR_calf_joint",
+  						 "FL_hip_joint", "FL_thigh_joint", "FL_calf_joint",
+  						 "RR_hip_joint", "RR_thigh_joint", "RR_calf_joint",
+  						 "RL_hip_joint", "RL_thigh_joint", "RL_calf_joint"};
+  	for(int i(0); i<12; ++i){
+  		_joint_state.position[i] = state->motorState[i].q;
+  		_joint_state.velocity[i] = state->motorState[i].dq;
+  		_joint_state.effort[i]   = state->motorState[i].tauEst;
+  	}
+  
+  	_pub.publish(_joint_state);
+  #endif  // COMPILE_WITH_MOVE_BASE
+  }
+  
+  void IOCYBERDOG::UserCode()
+  {
+  	cyberdogData = robot_data;
+  	motor_cmd = cyberdogCmd;
+  
+  #ifdef DEBUG_MOTOR
+  	if((count++) % 1000 == 0)
+  	{
+  		printf("interval:---------%.4f-------------\n", cyberdogData.ctrl_topic_interval);
+  		printf("rpy [3]:");
+  		for(int i = 0; i < 3; i++)
+  			printf(" %.2f", cyberdogData.rpy[i]);
+  		printf("\nacc [3]:");
+  		for(int i = 0; i < 3; i++)
+  			printf(" %.2f", cyberdogData.acc[i]);
+  		printf("\nquat[4]:");
+  		for(int i = 0; i < 4; i++)
+  			printf(" %.2f", cyberdogData.quat[i]);
+  		printf("\nomeg[3]:");
+  		for(int i = 0; i < 3; i++)
+  			printf(" %.2f", cyberdogData.omega[i]);
+  		printf("\nq  [12]:");
+  		for(int i = 0; i < 12; i++)
+  			printf(" %.2f", cyberdogData.q[i]);
+  		printf("\nqd [12]:");
+  		for(int i = 0; i < 12; i++)
+  			printf(" %.2f", cyberdogData.qd[i]);
+  		printf("\ntau[12]:");
+  		for(int i = 0; i < 12; i++)
+  			printf(" %.2f", cyberdogData.tau[i]);
+  		printf("\nq_des[12]:");
+  		for(int i = 0; i < 12; i++)
+  			printf(" %.2f", cyberdogCmd.q_des[i]);
+  		printf("\nqd_des[12]:");
+  		for(int i = 0; i < 12; i++)
+  			printf(" %.2f", cyberdogCmd.qd_des[i]);
+  		printf("\nkp_des[12]:");
+  		for(int i = 0; i < 12; i++)
+  			printf(" %.2f", cyberdogCmd.kp_des[i]);
+  		printf("\nkd_des[12]:");
+  		for(int i = 0; i < 12; i++)
+  			printf(" %.2f", cyberdogCmd.kd_des[i]);
+  		printf("\ntau_des[12]:");
+  		for(int i = 0; i < 12; i++)
+  			printf(" %.2f", cyberdogCmd.tau_des[i]);
+  		printf("\n\n");
+  	}
+  #endif // DEBUG_MOTOR
+  }
+  
+  #endif
+  
+  #endif  // COMPILE_WITH_REAL_ROBOT
+  ```
+
+* 在`unitreeLeg.h`中新增`CYBERDOGLeg`子类
+
+  ```cpp
+  class CYBERDOGLeg : public QuadrupedLeg
+  {
+  public:
+  	CYBERDOGLeg(const int legID, const Vec3 pHip2B)
+  			: QuadrupedLeg(legID, 0.10715, 0.2, 0.217, pHip2B) {}
+  	~CYBERDOGLeg() {}
+  };
+  ```
+
+* 在`unitreeRobot.cpp`、`unitreeRobot.h`中新增`CYBERDOGRobot`子类
+  
+  ```c++
+  class CYBERDOGRobot : public QuadrupedRobot
+  {
+  public:
+  	CYBERDOGRobot();
+  	~CYBERDOGRobot() {};
+  };
+  ```
+  
+  ```c++
+  CYBERDOGRobot::CYBERDOGRobot()
+  {
+  	_Legs[0] = new CYBERDOGLeg(0, Vec3(0.235, -0.05, 0));
+  	_Legs[1] = new CYBERDOGLeg(1, Vec3(0.235, 0.05, 0));
+  	_Legs[2] = new CYBERDOGLeg(2, Vec3(-0.235, -0.05, 0));
+  	_Legs[3] = new CYBERDOGLeg(3, Vec3(-0.235, 0.05, 0));
+  
+  	_feetPosNormalStand << 0.235, 0.235, -0.235, -0.235, //abad_x
+  			-0.15715, 0.15715, -0.15715, 0.15715, //abad_y  + abad_link_length
+  			-0.2800, -0.2800, -0.2800, -0.2800; // 调试出来的吗？我也不知道
+  
+  	_robVelLimitX << -0.4, 0.4;
+  	_robVelLimitY << -0.3, 0.3;
+  	_robVelLimitYaw << -0.5, 0.5;
+  
+  #ifdef COMPILE_WITH_REAL_ROBOT
+  	_mass = 12.328; // 低，增大质量 高，减小质量
+  	_pcb << 0.0, 0.0, 0.0; // 抬头后移，低头前移
+  	_Ib = Vec3(0.13, 0.54, 0.63).asDiagonal();
+  #endif  // COMPILE_WITH_REAL_ROBOT
+  
+  #ifdef COMPILE_WITH_SIMULATION
+  	_mass = 12.328; // 低，增大质量 高，减小质量
+  	_pcb << -0.01, 0.0, 0.0; // 抬头后移，低头前移
+  	_Ib = Vec3(0.13, 0.54, 0.63).asDiagonal();
+  #endif  // COMPILE_WITH_SIMULATION
+  }
   
   ```
-* `main.cpp`中增加
-  ```cmake
-    #ifdef COMPILE_WITH_REAL_ROBOT
-    #ifdef ROBOT_TYPE_A1
-    ioInter = new IOSDK();
-    ctrlPlat = CtrlPlatform::REALROBOT;
-    #endif
-    #ifdef ROBOT_TYPE_Go1
-    ioInter = new IOSDK();
-    ctrlPlat = CtrlPlatform::REALROBOT;
-    #endif
-    #ifdef ROBOT_TYPE_CYBERDOG
-    ioInter = new IOCYBERDOG();
-    ctrlPlat = CtrlPlatform::REALROBOT;
-    #endif
-    #endif  // COMPILE_WITH_REAL_ROBOT
   
-    #ifdef ROBOT_TYPE_A1
-    ctrlComp->robotModel = new A1Robot();
-    #endif
-    #ifdef ROBOT_TYPE_Go1
-    ctrlComp->robotModel = new Go1Robot();
-    #endif
-    #ifdef ROBOT_TYPE_CYBERDOG
-    ctrlComp->robotModel = new CYBERDOGRobot();
-    #endif
+* 在`main.cpp`中增加
+  ```cmake
+  #ifdef COMPILE_WITH_REAL_ROBOT
+  #if defined(ROBOT_TYPE_A1) || defined(ROBOT_TYPE_Go1)
+  #include "interface/IOSDK.h"
+  #elif defined(ROBOT_TYPE_CYBERDOG)
+  #include "interface/IOCYBERDOG.h"
+  #endif
+  #endif  // COMPILE_WITH_REAL_ROBOT
+  
+  #ifdef COMPILE_WITH_REAL_ROBOT
+  #ifdef ROBOT_TYPE_A1
+  	ioInter = new IOSDK();
+  	ctrlPlat = CtrlPlatform::REALROBOT;
+  #endif
+  #ifdef ROBOT_TYPE_Go1
+  	ioInter = new IOSDK();
+  	ctrlPlat = CtrlPlatform::REALROBOT;
+  #endif
+  #ifdef ROBOT_TYPE_CYBERDOG
+  	ioInter = new IOCYBERDOG();
+  	ctrlPlat = CtrlPlatform::REALROBOT;
+  #endif
+  #endif  // COMPILE_WITH_REAL_ROBOT
+  
+  #ifdef ROBOT_TYPE_A1
+  	ctrlComp->robotModel = new A1Robot();
+  #endif
+  #ifdef ROBOT_TYPE_Go1
+  	ctrlComp->robotModel = new Go1Robot();
+  #endif
+  #ifdef ROBOT_TYPE_CYBERDOG
+  	ctrlComp->robotModel = new CYBERDOGRobot();
+  #endif
   ```
