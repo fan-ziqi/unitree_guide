@@ -210,20 +210,14 @@ CYBERDOGRobot::CYBERDOGRobot()
 	_robVelLimitYaw << -0.5, 0.5;
 
 #ifdef COMPILE_WITH_REAL_ROBOT
-	//	_mass = 13.2;
-	//	_pcb << 0.0, 0.0, 0.0;
-	//	_Ib = Vec3(0.13, 0.54, 0.63).asDiagonal();
-	_mass = 6.52 + 12 * 0.55 + (0.509 + 0.664 + 0.114) * 4 - 0.2; // 12.328
-	_pcb << -0.05, 0.0, 0.0; // 抬头后移，低头前移 TODO 铁蛋抬头，需要调整
-	_Ib = Vec3(0.0792, 0.2085, 0.2265).asDiagonal(); // USE GO1
+	_mass = 12.328; // 低，增大质量 高，减小质量
+	_pcb << 0.0, 0.0, 0.0; // 抬头后移，低头前移
+	_Ib = Vec3(0.13, 0.54, 0.63).asDiagonal();
 #endif  // COMPILE_WITH_REAL_ROBOT
 
 #ifdef COMPILE_WITH_SIMULATION
 	_mass = 12.328; // 低，增大质量 高，减小质量
 	_pcb << -0.01, 0.0, 0.0; // 抬头后移，低头前移
 	_Ib = Vec3(0.13, 0.54, 0.63).asDiagonal();
-//	_mass = 6.52 + 12 * 0.55 + (0.509 + 0.664 + 0.114) * 4; // 12.328
-//	_pcb << 0.0, 0.0, 0.0;
-//	_Ib = Vec3(0.0792, 0.2085, 0.2265).asDiagonal(); // USE GO1
 #endif  // COMPILE_WITH_SIMULATION
 }
