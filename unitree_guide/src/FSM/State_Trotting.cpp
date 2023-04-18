@@ -4,6 +4,22 @@
 #include "FSM/State_Trotting.h"
 #include <iomanip>
 
+/*
+ * 调参说明：
+ *   1. 调整是机器人简化模型的质量和重心。
+ *      如果发现机器人在行走时出现机身高度过高或过低，则可以调整简化模型中机器人的质量。
+ *      如果发现机器人的姿态存在压低头部或抬高头部的现象，就需要调节简化模型中的机器人重心位置。
+ *      简化模型的质量和重心位置也与机器人的运动状态有关，所以最好在机器人的行走状态下调节简化模型的质量和重心位置。
+ *   2. 调整平衡控制器的位置刚度_Kpp、位置阻尼_Kdp、姿态刚度_kpw、位置阻尼_Kdw。
+ *      调节原则：在保持平衡的前提下，尽量地缩小位置刚度_Kpp和姿态刚度_kpw。
+ *      参数在 src/FSM/State_Trotting.cpp 文件下
+ *   3. 接下来要调整的是摆动腿的关节刚度与阻尼，以及摆动腿足端的刚度与阻尼。
+ *      若观测到机器人在每次触地时都会有明显的弹跳，并且在快速前进时会由于步幅不够大而摔倒。
+ *      此时应该增大摆动腿的关节刚度和足端的刚度，减小摆动腿的关节阻尼和足端的阻尼。
+ *      摆动腿的关节刚度与阻尼在 include/message/LowlevelCmd.h 中的 setSwingGain 函数下修改。setStableGain中的数据我不知道需不需要改。
+ *      足端的刚度与阻尼为 src/FSM/State_Trotting.cpp 文件中的 _KpSwing 和 _KdSwing
+ * */
+
 State_Trotting::State_Trotting(CtrlComponents *ctrlComp)
 		: FSMState(ctrlComp, FSMStateName::TROTTING, "trotting"),
 		  _est(ctrlComp->estimator), _phase(ctrlComp->phase),
@@ -36,12 +52,12 @@ State_Trotting::State_Trotting(CtrlComponents *ctrlComp)
 #endif
 
 #ifdef ROBOT_TYPE_CYBERDOG
-	_Kpp = Vec3(70, 70, 70).asDiagonal(); // 位置刚度 应尽量减小
-	_Kdp = Vec3(10, 10, 10).asDiagonal(); // 位置阻尼
-	_kpw = 500;                           // 姿态刚度 应尽量减小
-	_Kdw = Vec3(50, 50, 50).asDiagonal(); // 姿态阻尼
-	_KpSwing = Vec3(400, 400, 400).asDiagonal();
-	_KdSwing = Vec3(10, 10, 10).asDiagonal();
+	_Kpp = Vec3(70, 70, 70).asDiagonal();        // 位置刚度 在保持平衡的前提下尽量缩小
+	_Kdp = Vec3(10, 10, 10).asDiagonal();        // 位置阻尼
+	_kpw = 500;                                  // 姿态刚度 在保持平衡的前提下尽量缩小
+	_Kdw = Vec3(50, 50, 50).asDiagonal();        // 姿态阻尼
+	_KpSwing = Vec3(400, 400, 400).asDiagonal(); // 足端刚度
+	_KdSwing = Vec3(10, 10, 10).asDiagonal();    // 足端阻尼
 #endif
 
 	_vxLim = _robModel->getRobVelLimitX();

@@ -161,17 +161,21 @@ struct LowlevelCmd
 			setStableGain(i);
 		}
 	}
+
+	/*
+	 * Kp为摆动腿的关节刚度，Kd为摆动腿的关节阻尼，三对数据一起修改。
+	 * */
 	void setSwingGain(int legID)
 	{
 		motorCmd[legID * 3 + 0].mode = 10;
 		motorCmd[legID * 3 + 0].Kp = 3;
-		motorCmd[legID * 3 + 0].Kd = 0.2; // 2
+		motorCmd[legID * 3 + 0].Kd = 0.2;
 		motorCmd[legID * 3 + 1].mode = 10;
 		motorCmd[legID * 3 + 1].Kp = 3;
-		motorCmd[legID * 3 + 1].Kd = 0.2; // 2
+		motorCmd[legID * 3 + 1].Kd = 0.2;
 		motorCmd[legID * 3 + 2].mode = 10;
 		motorCmd[legID * 3 + 2].Kp = 3;
-		motorCmd[legID * 3 + 2].Kd = 0.2; // 2
+		motorCmd[legID * 3 + 2].Kd = 0.2;
 	}
 };
 
