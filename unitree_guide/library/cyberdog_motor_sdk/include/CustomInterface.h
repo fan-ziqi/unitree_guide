@@ -36,7 +36,7 @@ struct Robot_Data
 	float q[12];              // 12个关节电机角度，弧度制
 	float qd[12];             //电机角速度，弧度制
 	float tau[12];            //电机扭矩 N.M
-	float quat[4];            //机身姿态四元数，右手坐标系 x, y, z, w
+	float quat[4];            //机身姿态四元数，右手坐标系 w, x, y, z
 	float rpy[3];             //机身姿态横滚、俯仰、偏航角 弧度制
 	float acc[3];             //加速度计值
 	float omega[3];           //角速度计值

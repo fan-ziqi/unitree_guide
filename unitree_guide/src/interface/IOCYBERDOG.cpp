@@ -49,11 +49,11 @@ void IOCYBERDOG::sendRecv(const LowlevelCmd *cmd, LowlevelState *state)
 	{
 		state->imu.accelerometer[i] = cyberdogData.acc[i];
 	}
-	// 注意 Cyberdog SDK 的四元数顺序为 xyzw 需要转成 wxyz
-	state->imu.quaternion[0] = cyberdogData.quat[1];
-	state->imu.quaternion[1] = cyberdogData.quat[2];
-	state->imu.quaternion[2] = cyberdogData.quat[3];
-	state->imu.quaternion[3] = cyberdogData.quat[0];
+	// Cyberdog SDK 的四元数顺序为 wxyz
+	for(int i = 0; i < 4; i++)
+	{
+		state->imu.quaternion[i] = cyberdogData.quat[i];
+	}
 	for(int i = 0; i < 3; i++)
 	{
 		state->imu.gyroscope[i] = cyberdogData.omega[i];
