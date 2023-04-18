@@ -36,10 +36,10 @@ State_Trotting::State_Trotting(CtrlComponents *ctrlComp)
 #endif
 
 #ifdef ROBOT_TYPE_CYBERDOG
-	_Kpp = Vec3(20, 20, 70).asDiagonal();
-	_Kdp = Vec3(10, 10, 10).asDiagonal();
-	_kpw = 500;
-	_Kdw = Vec3(50, 50, 50).asDiagonal();
+	_Kpp = Vec3(70, 70, 70).asDiagonal(); // 位置刚度 应尽量减小
+	_Kdp = Vec3(10, 10, 10).asDiagonal(); // 位置阻尼
+	_kpw = 500;                           // 姿态刚度 应尽量减小
+	_Kdw = Vec3(50, 50, 50).asDiagonal(); // 姿态阻尼
 	_KpSwing = Vec3(400, 400, 400).asDiagonal();
 	_KdSwing = Vec3(10, 10, 10).asDiagonal();
 #endif

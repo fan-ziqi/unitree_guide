@@ -20,11 +20,11 @@ State_BalanceTest::State_BalanceTest(CtrlComponents *ctrlComp)
 	_yawMax = 20 * M_PI / 180;
 	_yawMin = -_yawMax;
 
-	_Kpp = Vec3(150, 150, 150).asDiagonal();
-	_Kdp = Vec3(25, 25, 25).asDiagonal();
+	_Kpp = Vec3(150, 150, 150).asDiagonal(); // 位置刚度150 调参的时候改成80
+	_Kdp = Vec3(25, 25, 25).asDiagonal();    // 位置阻尼25
 
-	_kpw = 200;
-	_Kdw = Vec3(30, 30, 30).asDiagonal();
+	_kpw = 200;                              // 姿态刚度200 调参的时候改成80
+	_Kdw = Vec3(30, 30, 30).asDiagonal();    // 姿态阻尼30
 }
 
 void State_BalanceTest::enter()
