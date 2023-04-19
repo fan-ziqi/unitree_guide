@@ -57,7 +57,7 @@ State_Trotting::State_Trotting(CtrlComponents *ctrlComp)
 	_kpw = 500;                                  // 姿态刚度 在保持平衡的前提下尽量缩小
 	_Kdw = Vec3(50, 50, 50).asDiagonal();        // 姿态阻尼
 	_KpSwing = Vec3(400, 400, 400).asDiagonal(); // 足端刚度
-	_KdSwing = Vec3(10, 10, 10).asDiagonal();    // 足端阻尼
+	_KdSwing = Vec3(25, 25, 25).asDiagonal();    // 足端阻尼
 #endif
 
 	_vxLim = _robModel->getRobVelLimitX();
