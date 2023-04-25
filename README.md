@@ -86,9 +86,9 @@ make -j8
 
 * `WirelessHandle.cpp`、`WirelessHandle.h`、`IOSDK.cpp`、`IOSDK.h`
   中增加`#if defined(ROBOT_TYPE_A1) || defined(ROBOT_TYPE_Go1)`宏定义
-  
+
 * 在`CMakeLists.txt`中增加`CYBERDOG`相关代码
-  
+
   ```cmake
   if(${ROBOT_TYPE} STREQUAL "A1")
     add_definitions(-DROBOT_TYPE_A1)
@@ -142,7 +142,7 @@ make -j8
     endif()
   endif()
   ```
-  
+
 * 新增`IOCYBERDOG.cpp`、`IOCYBERDOG.h`接口文件
 
   ```cpp
@@ -340,7 +340,7 @@ make -j8
   ```
 
 * 在`unitreeRobot.cpp`、`unitreeRobot.h`中新增`CYBERDOGRobot`子类
-  
+
   ```c++
   class CYBERDOGRobot : public QuadrupedRobot
   {
@@ -349,7 +349,7 @@ make -j8
   	~CYBERDOGRobot() {};
   };
   ```
-  
+
   ```c++
   CYBERDOGRobot::CYBERDOGRobot()
   {
@@ -380,7 +380,7 @@ make -j8
   }
   
   ```
-  
+
 * 在`main.cpp`中增加
   ```cmake
   #ifdef COMPILE_WITH_REAL_ROBOT
@@ -416,3 +416,5 @@ make -j8
   	ctrlComp->robotModel = new CYBERDOGRobot();
   #endif
   ```
+
+test
