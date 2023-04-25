@@ -416,5 +416,3 @@ make -j8
   	ctrlComp->robotModel = new CYBERDOGRobot();
   #endif
   ```
-
-test
