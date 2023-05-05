@@ -58,6 +58,8 @@ UserCommand KeyBoard::checkCmd()
 			return UserCommand::L1_Y;
 		case '7':
 			return UserCommand::BACKFLIP;
+		case 't':
+			return UserCommand::TOWR;
 		case ' ':
 			userValue.setZero();
 			return UserCommand::NONE;

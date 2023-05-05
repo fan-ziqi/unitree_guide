@@ -34,7 +34,8 @@ enum class UserCommand
 	L1_X,       // balanceTest
 	L1_A,       // swingTest
 	L1_Y,        // stepTest
-	BACKFLIP
+	BACKFLIP,
+	TOWR
 };
 
 enum class FrameType
@@ -71,7 +72,8 @@ enum class FSMStateName
 	BALANCETEST,
 	SWINGTEST,
 	STEPTEST,
-	BACKFLIP
+	BACKFLIP,
+	TOWR
 };
 
 #endif  // ENUMCLASS_H

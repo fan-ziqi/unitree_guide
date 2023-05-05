@@ -14,6 +14,7 @@
 #include "FSM/State_SwingTest.h"
 #include "FSM/State_StepTest.h"
 #include "FSM/State_BackFlip.h"
+#include "FSM/State_Towr.h"
 #include "common/enumClass.h"
 #include "control/CtrlComponents.h"
 #ifdef COMPILE_WITH_MOVE_BASE
@@ -31,6 +32,7 @@ struct FSMStateList
 	State_SwingTest *swingTest;
 	State_StepTest *stepTest;
 	State_BackFlip *backFlip;
+	State_Towr *towr;
 #ifdef COMPILE_WITH_MOVE_BASE
 	State_move_base *moveBase;
 #endif  // COMPILE_WITH_MOVE_BASE

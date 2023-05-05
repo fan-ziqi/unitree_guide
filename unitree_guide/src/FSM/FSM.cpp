@@ -17,6 +17,7 @@ FSM::FSM(CtrlComponents *ctrlComp)
 	_stateList.swingTest = new State_SwingTest(_ctrlComp);
 	_stateList.stepTest = new State_StepTest(_ctrlComp);
 	_stateList.backFlip = new State_BackFlip(_ctrlComp);
+	_stateList.towr = new State_Towr(_ctrlComp);
 #ifdef COMPILE_WITH_MOVE_BASE
 	_stateList.moveBase = new State_move_base(_ctrlComp);
 #endif  // COMPILE_WITH_MOVE_BASE
@@ -103,6 +104,9 @@ FSMState *FSM::getNextState(FSMStateName stateName)
 			break;
 		case FSMStateName::BACKFLIP:
 			return _stateList.backFlip;
+			break;
+		case FSMStateName::TOWR:
+			return _stateList.towr;
 			break;
 #ifdef COMPILE_WITH_MOVE_BASE
 			case FSMStateName::MOVE_BASE:
