@@ -78,10 +78,15 @@ if(CATKIN_MAKE)
             tf
             geometry_msgs
             unitree_legged_msgs
+
+            xpp_msgs #towr
+            rosbag #towr
             )
     catkin_package(
             CATKIN_DEPENDS
             unitree_legged_msgs
+
+            xpp_msgs #towr
     )
 endif()
 
@@ -196,3 +201,23 @@ endif()
 #    endif()
 #endif()
 #target_link_libraries(myTest -pthread lcm)
+
+
+#find_package(catkin REQUIRED COMPONENTS
+#        roscpp
+#        rosbag
+#        std_msgs
+#        visualization_msgs
+#        message_generation
+#        xpp_msgs
+#        )
+#catkin_package(
+#        CATKIN_DEPENDS xpp_msgs
+#)
+#include_directories(
+#        include
+#        ${catkin_INCLUDE_DIRS}
+#)
+#add_executable(read_bag src/read_bag.cpp)
+#target_link_libraries(read_bag ${catkin_LIBRARIES})
+#add_dependencies(read_bag ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
