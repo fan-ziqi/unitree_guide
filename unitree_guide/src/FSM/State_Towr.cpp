@@ -29,8 +29,8 @@ void State_Towr::enter()
 //	_lowCmd->setSwingGain(2);
 //	_lowCmd->setSwingGain(3);
 
-	_Kp = Vec3(20, 20, 50).asDiagonal();
-	_Kd = Vec3(5, 5, 20).asDiagonal();
+	_Kp = Vec3(1500, 1500, 1500).asDiagonal();
+	_Kd = Vec3(50, 50, 50).asDiagonal();
 
 	for(int i = 0; i < 12; i++)
 	{
@@ -50,7 +50,7 @@ void State_Towr::enter()
 
 	rosbag::Bag bag;
 	bag.open(src_bag, rosbag::bagmode::Read);
-	std::vector<std::string> topics;
+	std::vector <std::string> topics;
 	topics.push_back(std::string(state_topic));
 	rosbag::View view(bag, rosbag::TopicQuery(topics));
 	// rosbag::View view(bag);
@@ -87,6 +87,8 @@ void State_Towr::enter()
 			for(auto &ee: state->ee_motion)
 			{
 				_eePos4.col(ee_index[ee_num]) << ee.pos.x, ee.pos.y, ee.pos.z;
+				// 限制
+				if(_eePos4.col(ee_index[ee_num])(2) > 0.2) _eePos4.col(ee_index[ee_num])(2) = 0;
 				_eeVel4.col(ee_index[ee_num]) << ee.vel.x, ee.vel.y, ee.vel.z;
 				_eeAcc4.col(ee_index[ee_num]) << ee.acc.x, ee.acc.y, ee.acc.z;
 				ee_num++;
@@ -121,13 +123,15 @@ void State_Towr::enter()
 	}
 	bag.close();
 #ifdef TOWR_DEBUG
-	for(const auto &posGoal4: _eePos4Vec)
+	for(int index = 0; index < _eePos4Vec.size() - 1; ++index)
 	{
-		for(int i = 0; i < 3; ++i)
+		Vec34 eePos4 = _eePos4Vec.at(index);
+		Vec3 basePosePos = _basePosePosVec.at(index);
+		for(int i = 0; i < 4; ++i)
 		{
-			for(int j = 0; j < 4; ++j)
+			for(int j = 0; j < 3; ++j)
 			{
-				std::cout << posGoal4(i, j) << " ";
+				std::cout << eePos4(j, i) - basePosePos(j) << " ";
 			}
 			std::cout << std::endl;
 		}
@@ -162,6 +166,7 @@ void State_Towr::enter()
 		std::cout << std::endl;
 	}
 #endif
+
 	_ctrlComp->ioInter->zeroCmdPanel();
 	_ctrl_index = 0;
 	last_time = std::chrono::steady_clock::now();
@@ -175,10 +180,13 @@ void State_Towr::run()
 	_eePos4 = _eePos4Vec.at(_ctrl_index);
 	_eeVel4 = _eeVel4Vec.at(_ctrl_index);
 	_eeContact4 = _eeContact4Vec.at(_ctrl_index);
+	_basePosePos = _basePosePosVec.at(_ctrl_index);
 
 	for(int i = 0; i < 4; ++i)
 	{
+#ifdef TOWR_DEBUG
 		std::cout << _eeContact4(i) << " ";
+#endif
 		if(_eeContact4(i) == 0)
 		{
 			_lowCmd->setSwingGain(i);
@@ -188,7 +196,9 @@ void State_Towr::run()
 			_lowCmd->setStableGain(i);
 		}
 	}
+#ifdef TOWR_DEBUG
 	std::cout << std::endl;
+#endif
 
 //	_positionCtrl();
 	_torqueCtrl();
@@ -201,8 +211,14 @@ void State_Towr::run()
 	{
 		if(_ctrl_index < _eeForce4Vec.size() - 1)
 		{
+#ifdef TOWR_DEBUG
 			std::cout << _ctrl_index << std::endl;
+#endif
 			_ctrl_index++;
+		}
+		else
+		{
+			_eeForce4.setZero();
 		}
 		last_time = std::chrono::steady_clock::now();
 	}
@@ -246,6 +262,9 @@ void State_Towr::_torqueCtrl()
 	Mat3 jaco;
 	Vec12 tau_des, tau_pd, tau;
 
+	double _last_debug = 0;
+	int _output_debug = 0;
+
 	for(int i = 0; i < 4; i++)
 	{
 		eePos_now = _ctrlComp->robotModel->getFootPosition(*_lowState, i, FrameType::BODY);
@@ -254,11 +273,24 @@ void State_Towr::_torqueCtrl()
 
 		eePos_goal = _eePos4.col(i) - _basePosePos;
 
+//		if(std::pow((_last_debug - eePos_goal(0)), 2) > 0.05)
+//		{
+//			_output_debug = 1;
+//			std::cout << eePos_goal(0) << " " << eePos_goal(1) << " " << eePos_goal(2) << " " << std::endl;
+//		}
+//		else
+//		{
+//			_output_debug = 0;
+//		}
+//		_last_debug = eePos_goal(0);
+
 		tau_des.segment(i * 3, 3) = jaco.transpose() * -_eeForce4.col(i);
-		tau_pd.segment(i * 3, 3) = _Kp * (eePos_goal - eePos_now) + _Kd * (-eeVel_now);
+		tau_pd.segment(i * 3, 3) = jaco.transpose() * (_Kp * (eePos_goal - eePos_now) + _Kd * (-eeVel_now));
 	}
-//	tau = tau_des + tau_pd;
-	tau = tau_des * 1.5;
+//	if(_output_debug == 1) std::cout << std::endl;
+	tau = tau_des * 2.0 + tau_pd;
+//	tau = tau_pd;
+//	tau = tau_des * 1.5;
 
 	_lowCmd->setTau(tau);
 }
