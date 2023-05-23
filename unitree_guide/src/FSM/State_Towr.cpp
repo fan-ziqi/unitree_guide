@@ -50,7 +50,7 @@ void State_Towr::enter()
 
 	rosbag::Bag bag;
 	bag.open(src_bag, rosbag::bagmode::Read);
-	std::vector <std::string> topics;
+	std::vector<std::string> topics;
 	topics.push_back(std::string(state_topic));
 	rosbag::View view(bag, rosbag::TopicQuery(topics));
 	// rosbag::View view(bag);
@@ -273,24 +273,10 @@ void State_Towr::_torqueCtrl()
 
 		eePos_goal = _eePos4.col(i) - _basePosePos;
 
-//		if(std::pow((_last_debug - eePos_goal(0)), 2) > 0.05)
-//		{
-//			_output_debug = 1;
-//			std::cout << eePos_goal(0) << " " << eePos_goal(1) << " " << eePos_goal(2) << " " << std::endl;
-//		}
-//		else
-//		{
-//			_output_debug = 0;
-//		}
-//		_last_debug = eePos_goal(0);
-
 		tau_des.segment(i * 3, 3) = jaco.transpose() * -_eeForce4.col(i);
 		tau_pd.segment(i * 3, 3) = jaco.transpose() * (_Kp * (eePos_goal - eePos_now) + _Kd * (-eeVel_now));
 	}
-//	if(_output_debug == 1) std::cout << std::endl;
 	tau = tau_des * 2.0 + tau_pd;
-//	tau = tau_pd;
-//	tau = tau_des * 1.5;
 
 	_lowCmd->setTau(tau);
 }
