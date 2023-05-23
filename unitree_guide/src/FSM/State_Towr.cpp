@@ -262,9 +262,6 @@ void State_Towr::_torqueCtrl()
 	Mat3 jaco;
 	Vec12 tau_des, tau_pd, tau;
 
-	double _last_debug = 0;
-	int _output_debug = 0;
-
 	for(int i = 0; i < 4; i++)
 	{
 		eePos_now = _ctrlComp->robotModel->getFootPosition(*_lowState, i, FrameType::BODY);
