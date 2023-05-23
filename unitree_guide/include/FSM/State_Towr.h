@@ -21,12 +21,19 @@ private:
 
 	Vec34 _initFeetPos, _feetPos;
 	Vec3 _initPos, _posGoal;
-	Vec34 _posGoal4, _velGoal4, _forceGoal4;
-	std::vector<Vec34> _posGoal4Vec, _velGoal4Vec, _forceGoal4Vec;
-	Vec4 _eeContact;
-	std::vector<Vec4> _eeContactVec;
-	Vec3 _basePos;
-	std::vector<Vec3> _basePosVec;
+
+
+	Vec3 _basePosePos;
+	std::vector<Vec3> _basePosePosVec;
+	Vec4 _basePoseOri;
+	std::vector<Vec4> _basePoseOriVec;
+	Vec3 _baseTwiLin, _baseTwiAng, _baseAccLin, _baseAccAng;
+	std::vector<Vec3> _baseTwiLinVec, _baseTwiAngVec, _baseAccLinVec, _baseAccAngVec;
+	Vec34 _eePos4, _eeVel4, _eeAcc4, _eeForce4;
+	std::vector<Vec34> _eePos4Vec, _eeVel4Vec, _eeVel4Acc, _eeForce4Vec;
+	Vec4 _eeContact4;
+	std::vector<Vec4> _eeContact4Vec;
+
 	Vec12 _targetPos;
 	float _xMin, _xMax;
 	float _yMin, _yMax;

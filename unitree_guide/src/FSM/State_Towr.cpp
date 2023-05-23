@@ -1,5 +1,7 @@
 #include "FSM/State_Towr.h"
 
+//#define TOWR_DEBUG
+
 State_Towr::State_Towr(CtrlComponents *ctrlComp)
 		: FSMState(ctrlComp, FSMStateName::TOWR, "Towr")
 {
@@ -52,7 +54,7 @@ void State_Towr::enter()
 	topics.push_back(std::string(state_topic));
 	rosbag::View view(bag, rosbag::TopicQuery(topics));
 	// rosbag::View view(bag);
-	int i = 0;
+	int ee_num = 0;
 	int ee_index[4] = {1, 0, 3, 2};
 	for(auto m: view)
 	{
@@ -64,140 +66,102 @@ void State_Towr::enter()
 		else
 		{
 //			std::cout << "time_from_start:\t" << state->time_from_start << std::endl;
-//			std::cout << "base:\t" << std::endl;
-//			std::cout << "\tpose:\t" << std::endl;
-//			std::cout << "\t\tposition:\t"
-//			          << state->base.pose.position.x << "\t"
-//			          << state->base.pose.position.y << "\t"
-//			          << state->base.pose.position.z << std::endl;
-			_basePos << state->base.pose.position.x, state->base.pose.position.y, state->base.pose.position.z;
-			_basePosVec.push_back(_basePos);
-//			std::cout << "\t\torientation:\t"
-//			          << state->base.pose.orientation.x << "\t"
-//			          << state->base.pose.orientation.y << "\t"
-//			          << state->base.pose.orientation.z << "\t"
-//			          << state->base.pose.orientation.w << std::endl;
-//
-//			std::cout << "\ttwist:\t" << std::endl;
-//			std::cout << "\t\tlinear:\t"
-//			          << state->base.twist.linear.x << "\t"
-//			          << state->base.twist.linear.y << "\t"
-//			          << state->base.twist.linear.z << std::endl;
-//			std::cout << "\t\tangular:\t"
-//			          << state->base.twist.angular.x << "\t"
-//			          << state->base.twist.angular.y << "\t"
-//			          << state->base.twist.angular.z << std::endl;
-//
-//			std::cout << "\taccel:\t" << std::endl;
-//			std::cout << "\t\tlinear:\t"
-//			          << state->base.accel.linear.x << "\t"
-//			          << state->base.accel.linear.y << "\t"
-//			          << state->base.accel.linear.z << std::endl;
-//			std::cout << "\t\tangular:\t"
-//			          << state->base.accel.angular.x << "\t"
-//			          << state->base.accel.angular.y << "\t"
-//			          << state->base.accel.angular.z << std::endl;
-//
-//			std::cout << "\tee_motion:\t" << std::endl;
-			i = 0;
+
+			_basePosePos << state->base.pose.position.x, state->base.pose.position.y, state->base.pose.position.z;
+			_basePosePosVec.push_back(_basePosePos);
+			_basePoseOri
+					<< state->base.pose.orientation.x, state->base.pose.orientation.y, state->base.pose.orientation.z, state->base.pose.orientation.w;
+			_basePoseOriVec.push_back(_basePoseOri);
+
+			_baseTwiLin << state->base.twist.linear.x, state->base.twist.linear.y, state->base.twist.linear.z;
+			_baseTwiLinVec.push_back(_baseTwiLin);
+			_baseTwiAng << state->base.twist.angular.x, state->base.twist.angular.y, state->base.twist.angular.z;
+			_baseTwiAngVec.push_back(_baseTwiAng);
+
+			_baseAccLin << state->base.accel.linear.x, state->base.accel.linear.y, state->base.accel.linear.z;
+			_baseAccLinVec.push_back(_baseAccLin);
+			_baseAccAng << state->base.accel.angular.x, state->base.accel.angular.y, state->base.accel.angular.z;
+			_baseAccAngVec.push_back(_baseAccAng);
+
+			ee_num = 0;
 			for(auto &ee: state->ee_motion)
 			{
-//				std::cout << "\t\tpos:\t"
-//				          << ee.pos.x << "\t"
-//				          << ee.pos.y << "\t"
-//				          << ee.pos.z << std::endl;
-				_posGoal4.col(ee_index[i]) << ee.pos.x, ee.pos.y, ee.pos.z;
-
-//				std::cout << "\t\tvel:\t"
-//				          << ee.vel.x << "\t"
-//				          << ee.vel.y << "\t"
-//				          << ee.vel.z << std::endl;
-				_velGoal4.col(ee_index[i]) << ee.vel.x, ee.vel.y, ee.vel.z;
-//				std::cout << "\t\tacc:\t"
-//				          << ee.acc.x << "\t"
-//				          << ee.acc.y << "\t"
-//				          << ee.acc.z << std::endl;
-				i++;
+				_eePos4.col(ee_index[ee_num]) << ee.pos.x, ee.pos.y, ee.pos.z;
+				_eeVel4.col(ee_index[ee_num]) << ee.vel.x, ee.vel.y, ee.vel.z;
+				_eeAcc4.col(ee_index[ee_num]) << ee.acc.x, ee.acc.y, ee.acc.z;
+				ee_num++;
 			}
-			_posGoal4Vec.push_back(_posGoal4);
-			_velGoal4Vec.push_back(_velGoal4);
+			_eePos4Vec.push_back(_eePos4);
+			_eeVel4Vec.push_back(_eeVel4);
+			_eeVel4Acc.push_back(_eeAcc4);
 
-//			std::cout << "\tee_forces:\t" << std::endl;
-			i = 0;
+			ee_num = 0;
 			for(auto &ee_force: state->ee_forces)
 			{
-//				std::cout << "\t\t"
-//				          << ee_force.x << "\t"
-//				          << ee_force.y << "\t"
-//				          << ee_force.z << std::endl;
-				_forceGoal4.col(ee_index[i]) << ee_force.x, ee_force.y, ee_force.z;
-				i++;
+				_eeForce4.col(ee_index[ee_num]) << ee_force.x, ee_force.y, ee_force.z;
+				ee_num++;
 			}
-			_forceGoal4Vec.push_back(_forceGoal4);
+			_eeForce4Vec.push_back(_eeForce4);
 
-//			std::cout << "\tee_contact:\t" << std::endl;
-			i = 0;
+			ee_num = 0;
 			for(auto &contact: state->ee_contact)
 			{
 				if(contact == true)
 				{
-					_eeContact(ee_index[i]) = 1;
-//					std::cout << "1\t" << contact;
+					_eeContact4(ee_index[ee_num]) = 1;
 				}
 				else
 				{
-					_eeContact(ee_index[i]) = 0;
-//					std::cout << "0\t" << contact;
+					_eeContact4(ee_index[ee_num]) = 0;
 				}
-				i++;
+				ee_num++;
 			}
-			_eeContactVec.push_back(_eeContact);
-//			std::cout << std::endl << std::endl;
-
+			_eeContact4Vec.push_back(_eeContact4);
 		}
 	}
 	bag.close();
-
-//	for(const auto &posGoal4: _posGoal4Vec)
-//	{
-//		for(int i = 0; i < 3; ++i)
-//		{
-//			for(int j = 0; j < 4; ++j)
-//			{
-//				std::cout << posGoal4(i, j) << " ";
-//			}
-//			std::cout << std::endl;
-//		}
-//		std::cout << std::endl;
-//	}
-//	for(const auto &torGoal4: _forceGoal4Vec)
-//	{
-//		for(int i = 0; i < 3; ++i)
-//		{
-//			for(int j = 0; j < 4; ++j)
-//			{
-//				std::cout << torGoal4(i, j) << " ";
-//			}
-//			std::cout << std::endl;
-//		}
-//		std::cout << std::endl;
-//	}
-//	for(const auto &basePos: _basePosVec)
-//	{
-//		for(int i = 0; i < 3; ++i)
-//		{
-//			std::cout << basePos(i) << " ";
-//		}
-//		std::cout << std::endl;
-//	}
-//	for(const auto &eeContact: _eeContactVec)
-//	{
-//		for(int i = 0; i < 3; ++i)
-//		{
-//			std::cout << eeContact(i) << " ";
-//		}
-//		std::cout << std::endl;
-//	}
+#ifdef TOWR_DEBUG
+	for(const auto &posGoal4: _eePos4Vec)
+	{
+		for(int i = 0; i < 3; ++i)
+		{
+			for(int j = 0; j < 4; ++j)
+			{
+				std::cout << posGoal4(i, j) << " ";
+			}
+			std::cout << std::endl;
+		}
+		std::cout << std::endl;
+	}
+	for(const auto &torGoal4: _eeForce4Vec)
+	{
+		for(int i = 0; i < 3; ++i)
+		{
+			for(int j = 0; j < 4; ++j)
+			{
+				std::cout << torGoal4(i, j) << " ";
+			}
+			std::cout << std::endl;
+		}
+		std::cout << std::endl;
+	}
+	for(const auto &basePos: _basePosePosVec)
+	{
+		for(int i = 0; i < 3; ++i)
+		{
+			std::cout << basePos(i) << " ";
+		}
+		std::cout << std::endl;
+	}
+	for(const auto &eeContact: _eeContact4Vec)
+	{
+		for(int i = 0; i < 3; ++i)
+		{
+			std::cout << eeContact(i) << " ";
+		}
+		std::cout << std::endl;
+	}
+#endif
 	_ctrlComp->ioInter->zeroCmdPanel();
 	_ctrl_index = 0;
 	last_time = std::chrono::steady_clock::now();
@@ -207,15 +171,15 @@ void State_Towr::run()
 {
 	int update_interval = 10; // 更新间隔，单位为毫秒
 
-	_forceGoal4 = _forceGoal4Vec.at(_ctrl_index);
-	_posGoal4 = _posGoal4Vec.at(_ctrl_index);
-	_velGoal4 = _velGoal4Vec.at(_ctrl_index);
-	_eeContact = _eeContactVec.at(_ctrl_index);
+	_eeForce4 = _eeForce4Vec.at(_ctrl_index);
+	_eePos4 = _eePos4Vec.at(_ctrl_index);
+	_eeVel4 = _eeVel4Vec.at(_ctrl_index);
+	_eeContact4 = _eeContact4Vec.at(_ctrl_index);
 
 	for(int i = 0; i < 4; ++i)
 	{
-		std::cout << _eeContact(i) << " ";
-		if(_eeContact(i) == 0)
+		std::cout << _eeContact4(i) << " ";
+		if(_eeContact4(i) == 0)
 		{
 			_lowCmd->setSwingGain(i);
 		}
@@ -235,7 +199,7 @@ void State_Towr::run()
 
 	if(elapsed_ms >= update_interval)
 	{
-		if(_ctrl_index < _forceGoal4Vec.size() - 1)
+		if(_ctrl_index < _eeForce4Vec.size() - 1)
 		{
 			std::cout << _ctrl_index << std::endl;
 			_ctrl_index++;
@@ -247,9 +211,9 @@ void State_Towr::run()
 
 void State_Towr::exit()
 {
-	_forceGoal4Vec.clear();
-	_posGoal4Vec.clear();
-	_eeContactVec.clear();
+	_eeForce4Vec.clear();
+	_eePos4Vec.clear();
+	_eeContact4Vec.clear();
 	_ctrlComp->ioInter->zeroCmdPanel();
 }
 
@@ -278,21 +242,23 @@ void State_Towr::_positionCtrl()
 
 void State_Towr::_torqueCtrl()
 {
-	Vec3 pos, vel;
+	Vec3 eePos_now, eePos_goal, eeVel_now;
 	Mat3 jaco;
-	Vec12 _tau_des, _tau_pd, _tau;
+	Vec12 tau_des, tau_pd, tau;
 
 	for(int i = 0; i < 4; i++)
 	{
-		pos = _ctrlComp->robotModel->getFootPosition(*_lowState, i, FrameType::HIP);
-		vel = _ctrlComp->robotModel->getFootVelocity(*_lowState, i);
+		eePos_now = _ctrlComp->robotModel->getFootPosition(*_lowState, i, FrameType::BODY);
+		eeVel_now = _ctrlComp->robotModel->getFootVelocity(*_lowState, i);
 		jaco = _ctrlComp->robotModel->getJaco(*_lowState, i);
 
-		_tau_des.segment(i * 3, 3) = jaco.transpose() * -_forceGoal4.col(i);
-		_tau_pd.segment(i * 3, 3) = _Kp * (_posGoal4.col(i) - pos) + _Kd * (_velGoal4.col(i) - vel);
-	}
-//	_tau = _tau_des + _tau_pd;
-	_tau = _tau_des * 1.5;
+		eePos_goal = _eePos4.col(i) - _basePosePos;
 
-	_lowCmd->setTau(_tau);
+		tau_des.segment(i * 3, 3) = jaco.transpose() * -_eeForce4.col(i);
+		tau_pd.segment(i * 3, 3) = _Kp * (eePos_goal - eePos_now) + _Kd * (-eeVel_now);
+	}
+//	tau = tau_des + tau_pd;
+	tau = tau_des * 1.5;
+
+	_lowCmd->setTau(tau);
 }
