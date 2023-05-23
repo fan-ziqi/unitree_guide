@@ -16,12 +16,10 @@ public:
 	void exit();
 	FSMStateName checkChange();
 private:
-	void _positionCtrl();
 	void _torqueCtrl();
 
 	Vec34 _initFeetPos, _feetPos;
 	Vec3 _initPos, _posGoal;
-
 
 	Vec3 _basePosePos;
 	std::vector<Vec3> _basePosePosVec;
@@ -34,15 +32,10 @@ private:
 	Vec4 _eeContact4;
 	std::vector<Vec4> _eeContact4Vec;
 
-	Vec12 _targetPos;
-	float _xMin, _xMax;
-	float _yMin, _yMax;
-	float _zMin, _zMax;
 	Mat3 _Kp, _Kd;
 	int _ctrl_index = 0;
 	std::chrono::steady_clock::time_point last_time;
 	std::chrono::steady_clock::time_point current_time;
-
 };
 
 

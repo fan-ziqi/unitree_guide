@@ -24,10 +24,6 @@ void State_Towr::enter()
 		_lowCmd->setZeroDq(i);
 		_lowCmd->setZeroTau(i);
 	}
-//	_lowCmd->setSwingGain(0);
-//	_lowCmd->setSwingGain(1);
-//	_lowCmd->setSwingGain(2);
-//	_lowCmd->setSwingGain(3);
 
 	_Kp = Vec3(1500, 1500, 1500).asDiagonal();
 	_Kd = Vec3(50, 50, 50).asDiagonal();
@@ -53,7 +49,6 @@ void State_Towr::enter()
 	std::vector<std::string> topics;
 	topics.push_back(std::string(state_topic));
 	rosbag::View view(bag, rosbag::TopicQuery(topics));
-	// rosbag::View view(bag);
 	int ee_num = 0;
 	int ee_index[4] = {1, 0, 3, 2};
 	for(auto m: view)
@@ -200,7 +195,6 @@ void State_Towr::run()
 	std::cout << std::endl;
 #endif
 
-//	_positionCtrl();
 	_torqueCtrl();
 
 	current_time = std::chrono::steady_clock::now();
@@ -247,13 +241,6 @@ FSMStateName State_Towr::checkChange()
 	{
 		return FSMStateName::TOWR;
 	}
-}
-
-void State_Towr::_positionCtrl()
-{
-	_feetPos.col(0) = _posGoal;
-	_targetPos = _ctrlComp->robotModel->getQ(_feetPos, FrameType::HIP);
-	_lowCmd->setQ(_targetPos);
 }
 
 void State_Towr::_torqueCtrl()
