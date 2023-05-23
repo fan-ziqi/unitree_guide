@@ -33,10 +33,6 @@ void State_Towr::enter()
 		_lowCmd->motorCmd[i].q = _lowState->motorState[i].q;
 	}
 
-	_initFeetPos = _ctrlComp->robotModel->getFeet2BPositions(*_lowState, FrameType::HIP);
-	_feetPos = _initFeetPos;
-	_initPos = _initFeetPos.col(1);
-
 //	_ctrlComp->setAllSwing();
 
 	// TOWR START
@@ -51,7 +47,7 @@ void State_Towr::enter()
 	rosbag::View view(bag, rosbag::TopicQuery(topics));
 
 	// 在towr中，左右腿的序号是反的，在这里需要对其反向。即0123对应1032
-	int ee_num = 0;
+	int ee_num;
 	int ee_index[4] = {1, 0, 3, 2};
 
 	for(auto m: view)
@@ -254,7 +250,7 @@ void State_Towr::_torqueCtrl()
 
 		// towr的足端位置是在世界坐标系下表示的，需要进行坐标变换
 		eePos_goal = _eePos4.col(i) - _basePosePos;
-		
+
 		tau_des.segment(i * 3, 3) = jaco.transpose() * -_eeForce4.col(i);
 		tau_pd.segment(i * 3, 3) = jaco.transpose() * (_Kp * (eePos_goal - eePos_now) + _Kd * (-eeVel_now));
 	}

@@ -18,9 +18,6 @@ public:
 private:
 	void _torqueCtrl();
 
-	Vec34 _initFeetPos, _feetPos;
-	Vec3 _initPos, _posGoal;
-
 	Vec3 _basePosePos;
 	std::vector<Vec3> _basePosePosVec;
 	Vec4 _basePoseOri;
