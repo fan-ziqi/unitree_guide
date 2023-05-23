@@ -5,7 +5,7 @@
 State_Towr::State_Towr(CtrlComponents *ctrlComp)
 		: FSMState(ctrlComp, FSMStateName::TOWR, "Towr")
 {
-	// 开启安全检测
+	// 关闭安全检测
 	this->checkSafeOrientation = false;
 }
 
@@ -49,8 +49,11 @@ void State_Towr::enter()
 	std::vector<std::string> topics;
 	topics.push_back(std::string(state_topic));
 	rosbag::View view(bag, rosbag::TopicQuery(topics));
+
+	// 在towr中，左右腿的序号是反的，在这里需要对其反向。即0123对应1032
 	int ee_num = 0;
 	int ee_index[4] = {1, 0, 3, 2};
+
 	for(auto m: view)
 	{
 		xpp_msgs::RobotStateCartesian::ConstPtr state = m.instantiate<xpp_msgs::RobotStateCartesian>();
@@ -117,6 +120,7 @@ void State_Towr::enter()
 		}
 	}
 	bag.close();
+
 #ifdef TOWR_DEBUG
 	for(int index = 0; index < _eePos4Vec.size() - 1; ++index)
 	{
@@ -179,9 +183,6 @@ void State_Towr::run()
 
 	for(int i = 0; i < 4; ++i)
 	{
-#ifdef TOWR_DEBUG
-		std::cout << _eeContact4(i) << " ";
-#endif
 		if(_eeContact4(i) == 0)
 		{
 			_lowCmd->setSwingGain(i);
@@ -191,27 +192,23 @@ void State_Towr::run()
 			_lowCmd->setStableGain(i);
 		}
 	}
-#ifdef TOWR_DEBUG
-	std::cout << std::endl;
-#endif
 
+	// 力矩控制
 	_torqueCtrl();
 
+	// 定时10ms控制
 	current_time = std::chrono::steady_clock::now();
 	auto elapsed_ms = std::chrono::duration_cast<std::chrono::milliseconds>(current_time - last_time).count();
-
 
 	if(elapsed_ms >= update_interval)
 	{
 		if(_ctrl_index < _eeForce4Vec.size() - 1)
 		{
-#ifdef TOWR_DEBUG
-			std::cout << _ctrl_index << std::endl;
-#endif
 			_ctrl_index++;
 		}
 		else
 		{
+			// 执行结束，力矩设为0
 			_eeForce4.setZero();
 		}
 		last_time = std::chrono::steady_clock::now();
@@ -255,8 +252,9 @@ void State_Towr::_torqueCtrl()
 		eeVel_now = _ctrlComp->robotModel->getFootVelocity(*_lowState, i);
 		jaco = _ctrlComp->robotModel->getJaco(*_lowState, i);
 
+		// towr的足端位置是在世界坐标系下表示的，需要进行坐标变换
 		eePos_goal = _eePos4.col(i) - _basePosePos;
-
+		
 		tau_des.segment(i * 3, 3) = jaco.transpose() * -_eeForce4.col(i);
 		tau_pd.segment(i * 3, 3) = jaco.transpose() * (_Kp * (eePos_goal - eePos_now) + _Kd * (-eeVel_now));
 	}
