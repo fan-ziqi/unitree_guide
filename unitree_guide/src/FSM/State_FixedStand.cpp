@@ -82,6 +82,10 @@ FSMStateName State_FixedStand::checkChange()
 	{
 		return FSMStateName::TOWR;
 	}
+	else if(_lowState->userCmd == UserCommand::WBC)
+	{
+		return FSMStateName::WBC;
+	}
 #ifdef COMPILE_WITH_MOVE_BASE
 		else if(_lowState->userCmd == UserCommand::L2_Y){
 			return FSMStateName::MOVE_BASE;
