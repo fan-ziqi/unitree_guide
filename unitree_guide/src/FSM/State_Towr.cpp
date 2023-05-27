@@ -37,7 +37,7 @@ void State_Towr::enter()
 
 	// TOWR START
 
-	std::string src_bag = "/mnt/f/我的文件/研究生/四足项目/宇树/unitree_guide/src/thirdparty/xpp_msgs/bags/cyberdog_bag_15161.bag";
+	std::string src_bag = "/mnt/f/我的文件/研究生/四足项目/宇树/unitree_guide/src/thirdparty/xpp_msgs/bags/cyberdog_bag_13263.bag";
 	std::string state_topic = "/xpp/state_des";
 
 	rosbag::Bag bag;
