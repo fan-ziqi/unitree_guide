@@ -17,6 +17,7 @@ public:
 	FSMStateName checkChange();
 private:
 	void _torqueCtrl();
+	void read_yaml();
 
 	Vec3 _basePosePos;
 	std::vector<Vec3> _basePosePosVec;

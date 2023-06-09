@@ -1,6 +1,9 @@
 #include "FSM/State_Towr.h"
+#include <yaml-cpp/yaml.h>
 
 //#define TOWR_DEBUG
+
+#define YAML_PATH "/mnt/f/我的文件/研究生/四足项目/宇树/unitree_guide/src/unitree_guide/unitree_guide/src/FSM/towr_config.yaml"
 
 State_Towr::State_Towr(CtrlComponents *ctrlComp)
 		: FSMState(ctrlComp, FSMStateName::TOWR, "Towr")
@@ -25,8 +28,8 @@ void State_Towr::enter()
 		_lowCmd->setZeroTau(i);
 	}
 
-	_Kp = Vec3(1500, 1500, 1500).asDiagonal();
-	_Kd = Vec3(50, 50, 50).asDiagonal();
+	_Kp = Vec3(100, 100, 100).asDiagonal();
+	_Kd = Vec3(10, 10, 10).asDiagonal();
 
 	for(int i = 0; i < 12; i++)
 	{
@@ -116,6 +119,8 @@ void State_Towr::enter()
 		}
 	}
 	bag.close();
+
+	read_yaml();
 
 #ifdef TOWR_DEBUG
 	for(int index = 0; index < _eePos4Vec.size() - 1; ++index)
@@ -254,7 +259,35 @@ void State_Towr::_torqueCtrl()
 		tau_des.segment(i * 3, 3) = jaco.transpose() * -_eeForce4.col(i);
 		tau_pd.segment(i * 3, 3) = jaco.transpose() * (_Kp * (eePos_goal - eePos_now) + _Kd * (-eeVel_now));
 	}
-	tau = tau_des * 2.0 + tau_pd;
+	tau = tau_des * 1.0 + tau_pd;
+//	std::cout << tau[0] << " " << tau[1] << " " << tau[2] << std::endl;
 
 	_lowCmd->setTau(tau);
+}
+
+void State_Towr::read_yaml()
+{
+	YAML::Node config;
+	try
+	{
+		config = YAML::LoadFile(YAML_PATH);
+	} catch(YAML::BadFile &e)
+	{
+		std::cout << "read error, please change YAML_PATH in file State_Towr.cpp" << std::endl;
+		return;
+	}
+
+	_Kp = Vec3(config["kp"]["a"].as<int>(), config["kp"]["b"].as<int>(), config["kp"]["c"].as<int>()).asDiagonal();
+	_Kd = Vec3(config["kd"]["a"].as<int>(), config["kd"]["b"].as<int>(), config["kd"]["c"].as<int>()).asDiagonal();
+
+	std::cout << "Change kp to ["
+	          << config["kp"]["a"].as<int>() << ", "
+	          << config["kp"]["b"].as<int>() << ", "
+	          << config["kp"]["c"].as<int>() << ", "
+	          << "]" << std::endl;
+	std::cout << "Change kd to ["
+	          << config["kd"]["a"].as<int>() << ", "
+	          << config["kd"]["b"].as<int>() << ", "
+	          << config["kd"]["c"].as<int>() << ", "
+	          << "]" << std::endl;
 }

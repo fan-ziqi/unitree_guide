@@ -221,3 +221,7 @@ endif()
 #add_executable(read_bag src/read_bag.cpp)
 #target_link_libraries(read_bag ${catkin_LIBRARIES})
 #add_dependencies(read_bag ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
+find_package(yaml-cpp REQUIRED)
+include_directories(${YAML_CPP_INCLUDE_DIR})
+target_link_libraries(junior_ctrl yaml-cpp)
