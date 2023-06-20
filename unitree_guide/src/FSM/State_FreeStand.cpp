@@ -15,15 +15,15 @@ State_FreeStand::State_FreeStand(CtrlComponents *ctrlComp)
 	_pitchMin = -_pitchMax;
 	_yawMax = 20 * M_PI / 180;
 	_yawMin = -_yawMax;
-//	_heightMax = 0.04; //??? 0.4?
+//	_heightMax = 0.04;
 #ifdef ROBOT_TYPE_A1
-	_heightMax = 0.4;
+	_heightMax = 0.04;
 #endif
 #ifdef ROBOT_TYPE_Go1
-	_heightMax = 0.4;
+	_heightMax = 0.04;
 #endif
 #ifdef ROBOT_TYPE_CYBERDOG
-	_heightMax = 0.4;
+	_heightMax = 0.04;
 #endif
 	_heightMin = -_heightMax;
 }
