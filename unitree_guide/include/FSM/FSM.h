@@ -47,6 +47,8 @@ struct FSMStateList
 		delete balanceTest;
 		delete swingTest;
 		delete stepTest;
+		delete backFlip;
+		delete towr;
 #ifdef COMPILE_WITH_MOVE_BASE
 		delete moveBase;
 #endif  // COMPILE_WITH_MOVE_BASE

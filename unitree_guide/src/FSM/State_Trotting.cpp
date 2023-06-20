@@ -31,7 +31,16 @@ State_Trotting::State_Trotting(CtrlComponents *ctrlComp)
 
 	_gait = new GaitGenerator(ctrlComp);
 
+//	_gaitHeight = 0.08; // 抬腿高度
+#ifdef ROBOT_TYPE_A1
 	_gaitHeight = 0.08;
+#endif
+#ifdef ROBOT_TYPE_Go1
+	_gaitHeight = 0.08;
+#endif
+#ifdef ROBOT_TYPE_CYBERDOG
+	_gaitHeight = 0.08;
+#endif
 
 #ifdef ROBOT_TYPE_Go1
 	_Kpp = Vec3(70, 70, 70).asDiagonal();

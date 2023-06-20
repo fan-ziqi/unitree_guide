@@ -381,7 +381,129 @@ make -j8
   
   ```
 
+* 在`State_FreeStand.cpp`中找到`_heightMax = 0.04;`并修改机身高度
+  
+  ```cpp
+  //	_heightMax = 0.04;
+  #ifdef ROBOT_TYPE_A1
+  	_heightMax = 0.4;
+  #endif
+  #ifdef ROBOT_TYPE_Go1
+  	_heightMax = 0.4;
+  #endif
+  #ifdef ROBOT_TYPE_CYBERDOG
+  	_heightMax = 0.4;
+  #endif
+  ```
+  
+* 在`State_Trotting.cpp`中找到`_gaitHeight = 0.08;`并修改抬腿高度，并添加参数
+  
+  ```cpp
+  #ifdef ROBOT_TYPE_A1
+  _gaitHeight = 0.08;
+  #endif
+  #ifdef ROBOT_TYPE_Go1
+  _gaitHeight = 0.08;
+  #endif
+  #ifdef ROBOT_TYPE_CYBERDOG
+  _gaitHeight = 0.08;
+  #endif
+  
+  #ifdef ROBOT_TYPE_CYBERDOG
+  	_Kpp = Vec3(70, 70, 70).asDiagonal();        // 位置刚度 在保持平衡的前提下尽量缩小
+  	_Kdp = Vec3(10, 10, 10).asDiagonal();        // 位置阻尼
+  	_kpw = 500;                                  // 姿态刚度 在保持平衡的前提下尽量缩小
+  	_Kdw = Vec3(50, 50, 50).asDiagonal();        // 姿态阻尼
+  	_KpSwing = Vec3(400, 400, 400).asDiagonal(); // 足端刚度
+  	_KdSwing = Vec3(25, 25, 25).asDiagonal();    // 足端阻尼
+  #endif
+  ```
+  
+* 修改`LowlevelCmd.h`中的`setTau`函数
+  
+  ```cpp
+  #ifdef ROBOT_TYPE_A1
+  	void setTau(Vec12 tau, Vec2 torqueLimit = Vec2(-35, 35)){
+  		for(int i(0); i<12; ++i){
+  			if(std::isnan(tau(i))){
+  				printf("[ERROR] The setTau function meets Nan\n");
+  			}
+  			motorCmd[i].tau = saturation(tau(i), torqueLimit);
+  		}
+  	}
+  #endif
+  #ifdef ROBOT_TYPE_Go1
+  	void setTau(Vec12 tau, Vec2 torqueLimit = Vec2(-35, 35)){
+  		for(int i(0); i<12; ++i){
+  			if(std::isnan(tau(i))){
+  				printf("[ERROR] The setTau function meets Nan\n");
+  			}
+  			motorCmd[i].tau = saturation(tau(i), torqueLimit);
+  		}
+  	}
+  #endif
+  #ifdef ROBOT_TYPE_CYBERDOG
+  	void setTau(Vec12 tau, Vec2 torqueLimit = Vec2(-35, 35))
+  	{
+  		for(int i(0); i < 12; ++i)
+  		{
+  			if(std::isnan(tau(i)))
+  			{
+  				printf("[ERROR] The setTau function meets Nan\n");
+  			}
+  			motorCmd[i].tau = saturation(tau(i), torqueLimit);
+  		}
+  	}
+  #endif
+  ```
+  
+* 修改`LowlevelCmd.h`中的kp、kd
+  
+  ```cpp
+  #ifdef ROBOT_TYPE_A1
+  	void setSimStanceGain(int legID){
+  		motorCmd[legID*3+0].mode = 10;
+  		motorCmd[legID*3+0].Kp = 180;
+  		motorCmd[legID*3+0].Kd = 8;
+  		motorCmd[legID*3+1].mode = 10;
+  		motorCmd[legID*3+1].Kp = 180;
+  		motorCmd[legID*3+1].Kd = 8;
+  		motorCmd[legID*3+2].mode = 10;
+  		motorCmd[legID*3+2].Kp = 300;
+  		motorCmd[legID*3+2].Kd = 15;
+  	}
+  #endif
+  #ifdef ROBOT_TYPE_Go1
+  	void setSimStanceGain(int legID){
+  		motorCmd[legID*3+0].mode = 10;
+  		motorCmd[legID*3+0].Kp = 180;
+  		motorCmd[legID*3+0].Kd = 8;
+  		motorCmd[legID*3+1].mode = 10;
+  		motorCmd[legID*3+1].Kp = 180;
+  		motorCmd[legID*3+1].Kd = 8;
+  		motorCmd[legID*3+2].mode = 10;
+  		motorCmd[legID*3+2].Kp = 300;
+  		motorCmd[legID*3+2].Kd = 15;
+  	}
+  #endif
+  #ifdef ROBOT_TYPE_CYBERDOG
+  	void setSimStanceGain(int legID)
+  	{
+  		motorCmd[legID * 3 + 0].mode = 10;
+  		motorCmd[legID * 3 + 0].Kp = 180;
+  		motorCmd[legID * 3 + 0].Kd = 8;
+  		motorCmd[legID * 3 + 1].mode = 10;
+  		motorCmd[legID * 3 + 1].Kp = 180;
+  		motorCmd[legID * 3 + 1].Kd = 8;
+  		motorCmd[legID * 3 + 2].mode = 10;
+  		motorCmd[legID * 3 + 2].Kp = 300;
+  		motorCmd[legID * 3 + 2].Kd = 15;
+  	}
+  #endif
+  ```
+  
 * 在`main.cpp`中增加
+  
   ```cmake
   #ifdef COMPILE_WITH_REAL_ROBOT
   #if defined(ROBOT_TYPE_A1) || defined(ROBOT_TYPE_Go1)

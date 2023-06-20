@@ -57,7 +57,39 @@ struct LowlevelCmd
 		motorCmd[legID * 3 + 1].dq = qdi(1);
 		motorCmd[legID * 3 + 2].dq = qdi(2);
 	}
-	void setTau(Vec12 tau, Vec2 torqueLimit = Vec2(-50, 50))
+//	void setTau(Vec12 tau, Vec2 torqueLimit = Vec2(-50, 50))
+//	{
+//		for(int i(0); i < 12; ++i)
+//		{
+//			if(std::isnan(tau(i)))
+//			{
+//				printf("[ERROR] The setTau function meets Nan\n");
+//			}
+//			motorCmd[i].tau = saturation(tau(i), torqueLimit);
+//		}
+//	}
+#ifdef ROBOT_TYPE_A1
+	void setTau(Vec12 tau, Vec2 torqueLimit = Vec2(-35, 35)){
+		for(int i(0); i<12; ++i){
+			if(std::isnan(tau(i))){
+				printf("[ERROR] The setTau function meets Nan\n");
+			}
+			motorCmd[i].tau = saturation(tau(i), torqueLimit);
+		}
+	}
+#endif
+#ifdef ROBOT_TYPE_Go1
+	void setTau(Vec12 tau, Vec2 torqueLimit = Vec2(-35, 35)){
+		for(int i(0); i<12; ++i){
+			if(std::isnan(tau(i))){
+				printf("[ERROR] The setTau function meets Nan\n");
+			}
+			motorCmd[i].tau = saturation(tau(i), torqueLimit);
+		}
+	}
+#endif
+#ifdef ROBOT_TYPE_CYBERDOG
+	void setTau(Vec12 tau, Vec2 torqueLimit = Vec2(-35, 35))
 	{
 		for(int i(0); i < 12; ++i)
 		{
@@ -68,6 +100,7 @@ struct LowlevelCmd
 			motorCmd[i].tau = saturation(tau(i), torqueLimit);
 		}
 	}
+#endif
 	void setZeroDq(int legID)
 	{
 		motorCmd[legID * 3 + 0].dq = 0;
@@ -87,6 +120,45 @@ struct LowlevelCmd
 		motorCmd[legID * 3 + 1].tau = 0;
 		motorCmd[legID * 3 + 2].tau = 0;
 	}
+//	void setSimStanceGain(int legID)
+//	{
+//		motorCmd[legID * 3 + 0].mode = 10;
+//		motorCmd[legID * 3 + 0].Kp = 180;
+//		motorCmd[legID * 3 + 0].Kd = 8;
+//		motorCmd[legID * 3 + 1].mode = 10;
+//		motorCmd[legID * 3 + 1].Kp = 180;
+//		motorCmd[legID * 3 + 1].Kd = 8;
+//		motorCmd[legID * 3 + 2].mode = 10;
+//		motorCmd[legID * 3 + 2].Kp = 300;
+//		motorCmd[legID * 3 + 2].Kd = 15;
+//	}
+#ifdef ROBOT_TYPE_A1
+	void setSimStanceGain(int legID){
+		motorCmd[legID*3+0].mode = 10;
+		motorCmd[legID*3+0].Kp = 180;
+		motorCmd[legID*3+0].Kd = 8;
+		motorCmd[legID*3+1].mode = 10;
+		motorCmd[legID*3+1].Kp = 180;
+		motorCmd[legID*3+1].Kd = 8;
+		motorCmd[legID*3+2].mode = 10;
+		motorCmd[legID*3+2].Kp = 300;
+		motorCmd[legID*3+2].Kd = 15;
+	}
+#endif
+#ifdef ROBOT_TYPE_Go1
+	void setSimStanceGain(int legID){
+		motorCmd[legID*3+0].mode = 10;
+		motorCmd[legID*3+0].Kp = 180;
+		motorCmd[legID*3+0].Kd = 8;
+		motorCmd[legID*3+1].mode = 10;
+		motorCmd[legID*3+1].Kp = 180;
+		motorCmd[legID*3+1].Kd = 8;
+		motorCmd[legID*3+2].mode = 10;
+		motorCmd[legID*3+2].Kp = 300;
+		motorCmd[legID*3+2].Kd = 15;
+	}
+#endif
+#ifdef ROBOT_TYPE_CYBERDOG
 	void setSimStanceGain(int legID)
 	{
 		motorCmd[legID * 3 + 0].mode = 10;
@@ -99,6 +171,7 @@ struct LowlevelCmd
 		motorCmd[legID * 3 + 2].Kp = 300;
 		motorCmd[legID * 3 + 2].Kd = 15;
 	}
+#endif
 	void setRealStanceGain(int legID)
 	{
 		motorCmd[legID * 3 + 0].mode = 10;
